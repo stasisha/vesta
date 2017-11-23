@@ -1,9 +1,0 @@
-.bg-info ol li:before {
-    counter-increment: count-marker;
-    content: counter(count-marker);
-    color: #fff;
-    font-size: 10px;
-    position: absolute;
-    left: 4px;
-    top: 5px;
-}

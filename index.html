@@ -157,7 +157,7 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <div id="code" class="bg-info" style="display: none;">
+                <div id="code" class="bg-info" style="display: none;padding: 20px;">
                     <ol>
                         <li>
                             <h5># Connect to your server as root via SSH</h5>
@@ -180,6 +180,47 @@
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="assets/js/app.js"></script>
+<script>
+    $(function () {
+        var animationTime = 100;
+        $('.advanced-install.link').click(function () {
+            $('#advanced-install').toggle();
+        });
+        $('#web').change(function (e) {
+            if (this.value == '--nginx yes --phpfpm yes --apache no') {
+                $('#fpm').show(animationTime);
+                $('#fpm input').each(function (index) {
+                    this.checked = true;
+                });
+            } else {
+                $('#fpm').hide(animationTime);
+                $('#fpm input').each(function (index) {
+                    this.checked = false;
+                });
+            }
+        });
+        $('#install-form').submit(function (e) {
+            e.preventDefault();
+            var install = 'bash vst-install.sh';
+            $('#install-form .form-control').each(function (i, elm) {
+                if(elm.type == 'checkbox'){
+                    if(elm.checked){
+                        install += ' '+elm.value+' yes'
+                    } else {
+                        install += ' '+elm.value+' no'
+                    }
+                } else if (elm.type == 'text') {
+                    if (elm.value) {
+                        install += ' ' + elm.name + ' ' + elm.value;
+                    }
+                } else if (elm.value) {
+                    install += ' ' + elm.value;
+                }
+            });
+            $('#code').fadeOut(animationTime).fadeIn(animationTime);
+            $('#code #install-line').text(install);
+        });
+    });
+</script>
 </body>
 </html>
