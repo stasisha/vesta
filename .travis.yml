@@ -4,7 +4,7 @@ before_install:
   - git fetch upstream
   - git fetch origin upstream
 script:
-  - git checkout upstream
+  - git fetch upstream
   - git merge upstream/master
 after_success:
   - git push origin upstream
