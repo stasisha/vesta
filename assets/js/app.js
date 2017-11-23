@@ -7,12 +7,12 @@ $(function () {
 
     $('#web').change(function (e) {
         if (this.value == '--nginx yes --phpfpm yes --apache no') {
-            $('#fpm').fadeOut(animationTime);
+            $('#fpm').show(animationTime);
             $('#fpm input').each(function (index) {
                 this.checked = true;
             });
         } else {
-            $('#fpm').fadeIn(animationTime);
+            $('#fpm').hide(animationTime);
             $('#fpm input').each(function (index) {
                 this.checked = false;
             });
