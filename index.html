@@ -87,23 +87,18 @@
             </div>
             <div class="form-group col-md-4">
                 <label>DB</label>
-                <ul>
-                    <li>
-                        <label><input class="form-control" option-name="--mysql" type="checkbox" name="db"
-                                      checked="checked"/>MySQL</label>
-                    </li>
-                    <li>
-                        <label><input class="form-control" option-name="--postgresql" type="checkbox" name="db"/>PostgreSQL</label>
-                    </li>
-                </ul>
+                <select name="db" class="form-control">
+                    <option value="--mysql yes --postgresql96 no">MySQL</option>
+                    <option value="--mysql yes --postgresql yes --postgresql96 no">MySQL + PostgreSQL</option>
+                    <option value="--mysql yes --postgresql96 yes">MySQL + PostgreSQL 9.6</option>
+                </select>
             </div>
             <div class="form-group col-md-4">
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" value="">
-                        Option one is this and that&mdash;be sure to include why it's great
-                    </label>
-                </div>
+                <label>Git</label>
+                <select name="git" class="form-control">
+                    <option value="--git yes">yes</option>
+                    <option value="--git no">no</option>
+                </select>
             </div>
         </div>
 
