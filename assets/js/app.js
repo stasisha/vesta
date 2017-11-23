@@ -6,7 +6,7 @@ $(function () {
     });
 
     $('#web').change(function (e) {
-        if (this.val() == '--nginx yes --phpfpm yes --apache no') {
+        if (this.value == '--nginx yes --phpfpm yes --apache no') {
             $('#fpm').fadeOut(animationTime);
             $('#fpm input').each(function (index) {
                 this.checked = true;
