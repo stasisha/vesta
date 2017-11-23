@@ -3,11 +3,11 @@ $(function(){
         $('#advanced-install').toggle();
     });
 
-    $('.advanced-install-form').submit(function(e){
+    $('#install-form').submit(function(e){
         e.preventDefault();
         var install = 'bash vst-install.sh';
 
-        $('.advanced-install-form .val').each(function(i, elm){
+        $('#install-form .form-control').each(function(i, elm){
             if(elm.type == 'checkbox'){
                 if(elm.checked){
                     install += ' '+$(elm).attr('option-name')+' yes'
@@ -23,7 +23,7 @@ $(function(){
             }
         });
 
-        $('.code-incut.advanced').fadeOut(100).fadeIn(100);
-        $('.code-incut.advanced .install-line').text(install);
+        $('#code').fadeOut(100).fadeIn(100);
+        $('#code #install-line').text(install);
     });
 });
