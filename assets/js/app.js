@@ -1,6 +1,16 @@
 $(function(){
+    var animationTime = 100;
+
     $('.advanced-install.link').click(function(){
         $('#advanced-install').toggle();
+    });
+
+    $('#fpm').change(function (e) {
+        if(this.val() == '--nginx yes --phpfpm yes --apache no'){
+            $('#fpm').fadeOut(animationTime);
+        } else {
+            $('#fpm').fadeIn(animationTime);
+        }
     });
 
     $('#install-form').submit(function(e){
@@ -23,7 +33,7 @@ $(function(){
             }
         });
 
-        $('#code').fadeOut(100).fadeIn(100);
+        $('#code').fadeOut(animationTime).fadeIn(animationTime);
         $('#code #install-line').text(install);
     });
 });

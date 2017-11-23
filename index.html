@@ -21,19 +21,49 @@
         <div class="row">
             <div class="form-group col-md-4">
                 <label>WEB</label>
-                <select name="web" class="form-control">
-                    <option value="--nginx yes --apache yes --phpfpm no">nginx + apache</option>
+                <select id="web" name="web" class="form-control">
                     <option value="--nginx yes --phpfpm yes --apache no">nginx + php-fpm</option>
+                    <option value="--nginx yes --apache yes --phpfpm no">nginx + apache</option>
                     <option value="--nginx no --apache yes --phpfpm no">apache</option>
                     <option value="--nginx no --apache no --phpfpm no">no</option>
                 </select>
+                <div id="fpm">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="fpm" value="--phpfpm70 yes">php-fpm 7.0
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="fpm" value="--phpfpm70 yes">php-fpm 7.1
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="fpm" value="--phpfpm70 yes">php-fpm 7.2
+                        </label>
+                    </div>
+                </div>
             </div>
             <div class="form-group col-md-4">
-                <label>DNS</label>
-                <select name="dns" class="form-control">
-                    <option value="--named yes">named</option>
-                    <option value="--named no">no</option>
-                </select>
+                <label>DB</label>
+                <div id="db">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="fpm" value="--mysql yes --postgresql96 no">MySQL
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="fpm" value="--postgresql yes --postgresql96 no">PostgreSQL
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="fpm" value="--postgresql96 yes">PostgreSQL 9.6
+                        </label>
+                    </div>
+                </div>
             </div>
             <div class="form-group col-md-4">
                 <label>Additional Repository</label>
@@ -86,11 +116,10 @@
                 </select>
             </div>
             <div class="form-group col-md-4">
-                <label>DB</label>
-                <select name="db" class="form-control">
-                    <option value="--mysql yes --postgresql96 no">MySQL</option>
-                    <option value="--mysql yes --postgresql yes --postgresql96 no">MySQL + PostgreSQL</option>
-                    <option value="--mysql yes --postgresql96 yes">MySQL + PostgreSQL 9.6</option>
+                <label>DNS</label>
+                <select name="dns" class="form-control">
+                    <option value="--named yes">named</option>
+                    <option value="--named no">no</option>
                 </select>
             </div>
             <div class="form-group col-md-4">
