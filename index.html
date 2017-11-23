@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label>WEB</label>
                 <select id="web" name="web" class="form-control">
                     <option value="--nginx yes --phpfpm yes --apache no">nginx + php-fpm</option>
@@ -58,14 +58,14 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label>MySQL</label>
                 <select name="db" class="form-control">
                     <option value="--mysql yes">yes</option>
                     <option value="--mysql no">no</option>
                 </select>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label>PostgreSQL</label>
                 <select name="db" class="form-control">
                     <option value="--postgresql96 no --postgresql yes">PostgreSQL</option>
@@ -73,9 +73,7 @@
                     <option value="--postgresql no --postgresql96 no">no</option>
                 </select>
             </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label>FTP</label>
                 <select name="ftp" class="form-control">
                     <option value="--vsftpd yes --proftpd no">vsftpd</option>
@@ -83,7 +81,9 @@
                     <option value="--vsftpd no --proftpd no">no</option>
                 </select>
             </div>
-            <div class="form-group col-md-4">
+        </div>
+        <div class="row">
+            <div class="form-group col-md-3">
                 <label>Firewall</label>
                 <select name="firewall" class="form-control">
                     <option value="--iptables yes --fail2ban yes">iptables + fail2ban</option>
@@ -91,16 +91,14 @@
                     <option value="--iptables no --fail2ban no">no</option>
                 </select>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label>File System Quota</label>
                 <select name="filesystem-quota" class="form-control">
                     <option value="--quota no">no</option>
                     <option value="--quota yes">yes</option>
                 </select>
             </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label>MAIL</label>
                 <select name="mail" class="form-control">
                     <option value="--exim yes --dovecot yes --spamassassin yes --clamav yes">exim + dovecot +
@@ -116,37 +114,37 @@
                     <option value="--exim no --dovecot no --spamassassin no --clamav no">no</option>
                 </select>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label>DNS</label>
                 <select name="dns" class="form-control">
                     <option value="--named yes">named</option>
                     <option value="--named no">no</option>
                 </select>
             </div>
-            <div class="form-group col-md-4">
+        </div>
+        <div class="row">
+            <div class="form-group col-md-3">
                 <label>Additional Repository</label>
                 <select name="repo" class="form-control">
                     <option value="--remi yes">remi</option>
                     <option value="--remi no">no</option>
                 </select>
             </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label>Git</label>
                 <select name="git" class="form-control">
                     <option value="--git yes">yes</option>
                     <option value="--git no">no</option>
                 </select>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label>Composer</label>
                 <select name="composer" class="form-control">
                     <option value="--composer yes">yes</option>
                     <option value="--composer no">no</option>
                 </select>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label>Midnight Commander</label>
                 <select name="git" class="form-control">
                     <option value="--nc yes">yes</option>
@@ -155,15 +153,15 @@
             </div>
         </div>
         <div class="row">
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label>Hostname</label>
                 <input class="form-control" class="input" type="text" name="--hostname"/>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label>Email</label>
                 <input class="form-control" class="input" type="text" name="--email"/>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label>Password</label>
                 <input class="form-control" class="input" type="text" name="--password"/>
             </div>
