@@ -7,7 +7,11 @@
     <title>Quick setup helper</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
-        .btn, .form-control {
+        .btn{
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .btn, .form-control, .navbar {
             border-radius: 0;
         }
         .btn:focus {
@@ -15,6 +19,16 @@
         }
         h5 {
             font-weight: bold;
+        }
+        ol li:first-child h5 {
+            margin-top: 0;
+        }
+        form .row:last-child .form-group{
+            margin-bottom: 0px;
+        }
+        .code {
+            padding: 20px;
+            margin-top: 20px;
         }
     </style>
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css">>
@@ -24,13 +38,16 @@
     <![endif]-->
 </head>
 <body>
-<div class="container">
-    <form id="install-form" action="">
-        <div class="row">
-            <div class="col-md-12">
-                <h1>Advanced install settings</h1>
-            </div>
+<nav class="navbar navbar-inverse">
+    <div class="container">
+        <div class="navbar-header">
+            <span class="navbar-brand">Advanced install settings</span>
         </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="row">
+    <form id="install-form" class="col-md-12" action="">
         <div class="row">
             <div class="form-group col-md-3">
                 <label>WEB</label>
@@ -166,28 +183,33 @@
                 <input class="form-control" class="input" type="text" name="--password"/>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div id="code" class="bg-info" style="display: none;padding: 20px;margin-bottom: 20px;;">
-                    <ol style="margin: 0;padding-left: 20px">
-                        <li>
-                            <h5>Connect to your server as root via SSH</h5>
-                            <span>ssh root@your.server</span>
-                        </li>
-                        <li>
-                            <h5>Download installation script</h5>
-                            <span>curl -O http://vestacp.com/pub/vst-install.sh</span>
-                        </li>
-                        <li>
-                            <h5>Run it</h5>
-                            <span id="install-line">bash vst-install.sh</span>
-                        </li>
-                    </ol>
-                </div>
-                <button type="submit" class="btn btn-primary">Generate Install Command</button>
+    </form>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="code" class="bg-primary code" style="display: none;">
+                <ol style="margin: 0;padding-left: 20px">
+                    <li>
+                        <h5>Connect to your server as root via SSH</h5>
+                        <div>ssh root@your.server</div>
+                    </li>
+                    <li>
+                        <h5>Download installation script</h5>
+                        <div>curl -O https://raw.githubusercontent.com/stasisha/vesta/master/install/vst-install.sh</div>
+                    </li>
+                    <li>
+                        <h5>Run it</h5>
+                        <div id="install-line">bash vst-install.sh</div>
+                    </li>
+                </ol>
             </div>
         </div>
-    </form>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button type="submit" form="install-form" class="btn btn-success">Generate Install Command</button>
+        </div>
+    </div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -213,7 +235,7 @@
         $('#install-form').submit(function (e) {
             e.preventDefault();
             var install = 'bash vst-install.sh';
-            $('#install-form .form-control').each(function (i, elm) {
+            $('#install-form .form-control, .checkbox input').each(function (i, elm) {
                 if(elm.type == 'checkbox'){
                     if(elm.checked){
                         install += ' '+elm.value+' yes'
