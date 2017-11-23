@@ -1,10 +1,119 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quick config</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+</head>
 <body>
-
-<h1>My First Heading</h1>
-
-<p>My first paragraph.</p>
-
+    <form class="advanced-install-form install-settings-form" action="">
+        <div class="row">
+            <div class="small-12 columns">
+                <h4 class="module-title">Advanced install settings</h4>
+            </div>
+        </div>
+        <fieldset class="form-section">
+            <div class="row">
+                <div class="columns medium-4">
+                    <label>WEB</label>
+                    <select name="web" class="val">
+                        <option value="--nginx yes --apache yes --phpfpm no">nginx + apache</option>
+                        <option value="--nginx yes --phpfpm yes --apache no">nginx + php-fpm</option>
+                        <option value="--nginx no --apache yes --phpfpm no">apache</option>
+                        <option value="--nginx no --apache no --phpfpm no">no</option>
+                    </select>
+                    <label>DNS</label>
+                    <select name="dns" class="val">
+                        <option value="--named yes">named</option>
+                        <option value="--named no">no</option>
+                    </select>
+                    <label>Additional Repository</label>
+                    <select name="repo" class="val">
+                        <option value="--remi yes">remi</option>
+                        <option value="--remi no">no</option>
+                    </select>
+                </div>
+                <div class="columns medium-4">
+                    <label>FTP</label>
+                    <select name="ftp" class="val">
+                        <option value="--vsftpd yes --proftpd no">vsftpd</option>
+                        <option value="--vsftpd no --proftpd yes">proftpd</option>
+                        <option value="--vsftpd no --proftpd no">no</option>
+                    </select>
+                    <label>Firewall</label>
+                    <select name="firewall" class="val">
+                        <option value="--iptables yes --fail2ban yes">iptables + fail2ban</option>
+                        <option value="--iptables yes --fail2ban no">iptables</option>
+                        <option value="--iptables no --fail2ban no">no</option>
+                    </select>
+                    <label>File System Quota</label>
+                    <select name="filesystem-quota" class="val">
+                        <option value="--quota no">no</option>
+                        <option value="--quota yes">yes</option>
+                    </select>
+                </div>
+                <div class="columns medium-4">
+                    <label>MAIL</label>
+                    <select name="mail" class="val">
+                        <option value="--exim yes --dovecot yes --spamassassin yes --clamav yes">exim + dovecot + spamassassin + clamav
+                        <option value="--exim yes --dovecot yes --spamassassin yes --clamav no">exim + dovecot + spamassassin</option>
+                        <option value="--exim yes --dovecot yes --spamassassin no --clamav yes">exim + dovecot + clamav</option>
+                        <option value="--exim yes --dovecot yes --spamassassin no --clamav no">exim + dovecot</option>
+                        <option value="--exim yes --dovecot no --spamassassin no --clamav no">exim</option>
+                        <option value="--exim no --dovecot no --spamassassin no --clamav no">no</option>
+                    </select>
+                    <label>DB</label>
+                    <ul class="checkbox-list no-bullet">
+                        <li>
+                            <label><input class="val" option-name="--mysql" type="checkbox" name="db" checked="checked"/>MySQL</label>
+                        </li>
+                        <li>
+                            <label><input class="val" option-name="--postgresql" type="checkbox" name="db" />PostgreSQL</label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="form-section">
+            <div class="row">
+                <div class="columns medium-4">
+                    <label>Hostname</label>
+                    <input class="val input" class="input" type="text" name="--hostname" />
+                </div>
+                <div class="columns medium-4">
+                    <label>Email</label>
+                    <input class="val input" class="input" type="text" name="--email" />
+                </div>
+                <div class="columns medium-4">
+                    <label>Password</label>
+                    <input class="val input" class="input" type="text" name="--password" />
+                </div>
+            </div>
+        </fieldset>
+        <div class="row">
+            <div class="columns small-12">
+                <div class="code-incut advanced" style="display: none;">
+                    <ol class="command-list no-bullet">
+                        <li>
+                            <span class="command-label"># Connect to your server as root via SSH</span>
+                            <span class="command-code">ssh root@your.server</span>
+                        </li>
+                        <li>
+                            <span class="command-label"># Download installation script</span>
+                            <span class="command-code">curl -O http://vestacp.com/pub/vst-install.sh</span>
+                        </li>
+                        <li>
+                            <span class="command-label"># Run it</span>
+                            <span class="command-code install-line">bash vst-install.sh</span>
+                        </li>
+                    </ol>
+                </div>
+                <button type="submit" class="button secondary float-center">Generate Install Command</button>
+            </div>
+        </div>
+    </form>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="assets/js/app.js"></script>
 </body>
 </html>
