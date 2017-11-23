@@ -9,12 +9,12 @@ $(function () {
         if (this.val() == '--nginx yes --phpfpm yes --apache no') {
             $('#fpm').fadeOut(animationTime);
             $('#fpm input').each(function (index) {
-                $(this).val('--phpfpm' + $(this).data('fpm') + ' yes');
+                this.checked = true;
             });
         } else {
             $('#fpm').fadeIn(animationTime);
             $('#fpm input').each(function (index) {
-                $(this).val('--phpfpm' + $(this).data('fpm') + ' no');
+                this.checked = false;
             });
         }
     });
@@ -24,7 +24,13 @@ $(function () {
         var install = 'bash vst-install.sh';
 
         $('#install-form .form-control').each(function (i, elm) {
-            if (elm.type == 'text') {
+            if(elm.type == 'checkbox'){
+                if(elm.checked){
+                    install += ' '+elm.value+' yes'
+                } else {
+                    install += ' '+elm.value+' no'
+                }
+            } else if (elm.type == 'text') {
                 if (elm.value) {
                     install += ' ' + elm.name + ' ' + elm.value;
                 }
