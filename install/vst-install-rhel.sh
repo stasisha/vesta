@@ -693,12 +693,9 @@ fi
 
 # Installing rpm packages
 if [ "$remi" = 'yes' ]; then
-    yum -y --disablerepo=* \
-        --enablerepo="*base,*updates,nginx,epel,vesta,pgdg-96-redhat,remi*" \
-        install $software
+    yum -y install $software
 else
-    yum -y --disablerepo=* --enablerepo="*base,*updates,nginx,epel,vesta,pgdg-96-redhat" \
-        install $software
+    yum  install $software
 fi
 check_result $? "yum install failed"
 
