@@ -658,9 +658,6 @@ if [ "$mysql" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/phpMyAdmin//')
     software=$(echo "$software" | sed -e 's/roundcubemail//')
 fi
-echo $software;
-echo
-echo
 if [ "$postgresql" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/postgresql //')
     software=$(echo "$software" | sed -e 's/postgresql-server//')
@@ -668,15 +665,9 @@ if [ "$postgresql" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/php-pgsql//')
     software=$(echo "$software" | sed -e 's/phpPgAdmin//')
 fi
-echo $software;
-echo
-echo
 if [ "$postgresql96" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/postgresql96-server//')
 fi
-echo $software;
-echo
-echo
 if [ "$mc" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/mc//')
 fi
@@ -693,9 +684,12 @@ fi
 
 # Installing rpm packages
 if [ "$remi" = 'yes' ]; then
-    yum -y install $software
+    yum -y --disablerepo=* \
+        --enablerepo="*base,*updates,nginx,epel,vesta,pgdg96,remi*" \
+        install $software
 else
-    yum  install $software
+    yum -y --disablerepo=* --enablerepo="*base,*updates,nginx,epel,vesta,pgdg96" \
+        install $software
 fi
 check_result $? "yum install failed"
 
