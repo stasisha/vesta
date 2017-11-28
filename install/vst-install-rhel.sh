@@ -466,8 +466,10 @@ sleep 5
 #----------------------------------------------------------#
 
 # Checking swap on small instances
-if [ -z "$(swapon -s)" ] && [ $memory -lt 1000000 ]; then
-    fallocate -l 1G /swapfile
+if [ -z "$(swapon -s)" ] && [ $memory -lt 4000000 ]; then
+    echo "Creating 4G SWAP file. This can take few minutes..."
+    fallocate -l 4G /swapfile
+    dd if=/dev/zero of=/swapfile count=4096 bs=1MiB
     chmod 600 /swapfile
     mkswap /swapfile
     swapon /swapfile
