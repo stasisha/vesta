@@ -525,7 +525,7 @@ yum install -y https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x
 mkdir -p $vst_backups
 cd $vst_backups
 mkdir nginx httpd php php-fpm vsftpd proftpd named exim dovecot clamd \
-    spamassassin mysql postgresql mongodb vesta
+    spamassassin mysql postgresql mongodb vesta pgsql9.6
 
 # Backing up Nginx configuration
 service nginx stop > /dev/null 2>&1
@@ -537,10 +537,29 @@ cp -r /etc/httpd/* $vst_backups/httpd > /dev/null 2>&1
 
 # Backing up PHP configuration
 service php-fpm stop >/dev/null 2>&1
+service php70-php-fpm stop >/dev/null 2>&1
+service php71php-fpm stop >/dev/null 2>&1
+service php72-php-fpm stop >/dev/null 2>&1
+# Default
 cp /etc/php.ini $vst_backups/php > /dev/null 2>&1
 cp -r /etc/php.d  $vst_backups/php > /dev/null 2>&1
 cp /etc/php-fpm.conf $vst_backups/php-fpm > /dev/null 2>&1
 mv -f /etc/php-fpm.d/* $vst_backups/php-fpm/ > /dev/null 2>&1
+# PHP70
+cp /etc/opt/remi/php70/php.ini $vst_backups/php70 > /dev/null 2>&1
+cp -r /etc/opt/remi/php70/php.d  $vst_backups/php70 > /dev/null 2>&1
+cp /etc/opt/remi/php70/php-fpm.conf $vst_backups/php70-fpm > /dev/null 2>&1
+mv -f /etc/opt/remi/php70/php-fpm.d/* $vst_backups/php70-fpm/ > /dev/null 2>&1
+# PHP71
+cp /etc/opt/remi/php71/php.ini $vst_backups/php71 > /dev/null 2>&1
+cp -r /etc/opt/remi/php71/php.d  $vst_backups/php71 > /dev/null 2>&1
+cp /etc/opt/remi/php71/php-fpm.conf $vst_backups/php71-fpm > /dev/null 2>&1
+mv -f /etc/opt/remi/php71/php-fpm.d/* $vst_backups/php71-fpm/ > /dev/null 2>&1
+# PHP72
+cp /etc/opt/remi/php72/php.ini $vst_backups/php72 > /dev/null 2>&1
+cp -r /etc/opt/remi/php72/php.d  $vst_backups/php72 > /dev/null 2>&1
+cp /etc/opt/remi/php72/php-fpm.conf $vst_backups/php72-fpm > /dev/null 2>&1
+mv -f /etc/opt/remi/php72/php-fpm.d/* $vst_backups/php72-fpm/ > /dev/null 2>&1
 
 # Backing up Bind configuration
 yum remove bind-chroot > /dev/null 2>&1
@@ -584,7 +603,10 @@ mv /root/.my.cnf  $vst_backups/mysql > /dev/null 2>&1
 
 # Backing up MySQL/MariaDB configuration and data
 service postgresql stop > /dev/null 2>&1
+service postgresql-9.6 > /dev/null 2>&1
 mv /var/lib/pgsql/data $vst_backups/postgresql/  >/dev/null 2>&1
+mv /var/lib/pgsql/9.6 $vst_backups/postgresql96/  >/dev/null 2>&1
+
 
 # Backing up Vesta configuration and data
 service vesta stop > /dev/null 2>&1
@@ -664,11 +686,13 @@ if [ "$postgresql" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/postgresql //')
     software=$(echo "$software" | sed -e 's/postgresql-server//')
     software=$(echo "$software" | sed -e 's/postgresql-contrib//')
-    software=$(echo "$software" | sed -e 's/php-pgsql//')
-    software=$(echo "$software" | sed -e 's/phpPgAdmin//')
 fi
 if [ "$postgresql96" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/postgresql96-server//')
+fi
+if [ "$postgresql" = 'no' ] && [ "$postgresql96" = 'no' ]; then
+    software=$(echo "$software" | sed -e 's/php-pgsql//')
+    software=$(echo "$software" | sed -e 's/phpPgAdmin//')
 fi
 if [ "$mc" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/mc//')
