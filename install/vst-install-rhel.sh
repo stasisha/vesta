@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Vesta RHEL/CentOS installer v.05
+# Vesta RHEL/CentOS installer v.05s
 
 #----------------------------------------------------------#
 #                  Variables&Functions                     #
@@ -299,7 +299,7 @@ fi
 #                       Brief Info                         #
 #----------------------------------------------------------#
 
-# Printing nice ascii aslogo
+# Printing nice ASCII logo
 clear
 echo
 echo ' _|      _|  _|_|_|_|    _|_|_|  _|_|_|_|_|    _|_|'
@@ -818,10 +818,10 @@ echo 'PATH=$PATH:'$VESTA'/bin' >> /root/.bash_profile
 echo 'export PATH' >> /root/.bash_profile
 source /root/.bash_profile
 
-# Configuring logrotate for vesta logs
+# Configuring logrotate for Vesta logs
 wget $vestacp/logrotate/vesta -O /etc/logrotate.d/vesta
 
-# Buidling directory tree and creating some blank files for vesta
+# Building directory tree and creating some blank files for Vesta
 mkdir -p $VESTA/conf $VESTA/log $VESTA/ssl $VESTA/data/ips \
     $VESTA/data/queue $VESTA/data/users $VESTA/data/firewall \
     $VESTA/data/sessions
@@ -837,12 +837,12 @@ ln -s $VESTA/log /var/log/vesta
 chown admin:admin $VESTA/data/sessions
 chmod 770 $VESTA/data/sessions
 
-# Generating vesta configuration
+# Generating Vesta configuration
 rm -f $VESTA/conf/vesta.conf 2>/dev/null
 touch $VESTA/conf/vesta.conf
 chmod 660 $VESTA/conf/vesta.conf
 
-# WEB stack
+# Web stack
 if [ "$apache" = 'yes' ] && [ "$nginx" = 'no' ] ; then
     echo "WEB_SYSTEM='httpd'" >> $VESTA/conf/vesta.conf
     echo "WEB_RGROUPS='apache'" >> $VESTA/conf/vesta.conf
@@ -900,8 +900,8 @@ if [ "$exim" = 'yes' ]; then
     fi
 fi
 
-# CRON daemon
-echo "CRON_SYSTEM='crond'" >> $VESTA/conf/vesta.conf
+# Cron daemon
+echo "CRON_SYSTEM='cron'" >> $VESTA/conf/vesta.conf
 
 # Firewall stack
 if [ "$iptables" = 'yes' ]; then
@@ -1396,38 +1396,38 @@ if [ ! -z "$(grep ^admin: /etc/group)" ] && [ "$force" = 'yes' ]; then
     groupdel admin > /dev/null 2>&1
 fi
 
-# Adding vesta account
+# Adding Vesta admin account
 $VESTA/bin/v-add-user admin $vpass $email default System Administrator
 check_result $? "can't create admin user"
 $VESTA/bin/v-change-user-shell admin bash
 $VESTA/bin/v-change-user-language admin $lang
 
-# Configuring system ips
+# Configuring system IPs
 $VESTA/bin/v-update-sys-ip
 
-# Get main ip
+# Get main IP
 ip=$(ip addr|grep 'inet '|grep global|head -n1|awk '{print $2}'|cut -f1 -d/)
 
-# Firewall configuration
+# Configuring firewall
 if [ "$iptables" = 'yes' ]; then
     $VESTA/bin/v-update-firewall
 fi
 
-# Get public ip
+# Get public IP
 pub_ip=$(curl -s vestacp.com/what-is-my-ip/)
 if [ ! -z "$pub_ip" ] && [ "$pub_ip" != "$ip" ]; then
     $VESTA/bin/v-change-sys-ip-nat $ip $pub_ip
     ip=$pub_ip
 fi
 
-# Configuring mysql host
+# Configuring MySQL host
 if [ "$mysql" = 'yes' ]; then
     $VESTA/bin/v-add-database-host mysql localhost root $vpass
     $VESTA/bin/v-add-database admin default default $(gen_pass) mysql
 fi
 
-# Configuring pgsql host
-if [ "$postgresql" = 'yes' ] || [ "$postgresql96" = 'yes' ]; then
+# Configuring PostgreSQL host
+if [ "$postgresql" = 'yes' ]; then
     $VESTA/bin/v-add-database-host pgsql localhost postgres $vpass
     $VESTA/bin/v-add-database admin db db $(gen_pass) pgsql
 fi
@@ -1436,6 +1436,7 @@ fi
 $VESTA/bin/v-add-domain admin $servername
 check_result $? "can't create $servername domain"
 
+# Adding cron jobs
 command="sudo $VESTA/bin/v-update-sys-queue disk"
 $VESTA/bin/v-add-cron-job 'admin' '15' '02' '*' '*' '*' "$command"
 command="sudo $VESTA/bin/v-update-sys-queue traffic"
@@ -1452,7 +1453,7 @@ command="sudo $VESTA/bin/v-update-sys-rrd"
 $VESTA/bin/v-add-cron-job 'admin' '*/5' '*' '*' '*' '*' "$command"
 service crond restart
 
-# Building inititall rrd images
+# Building initital rrd images
 $VESTA/bin/v-update-sys-rrd
 
 # Enabling file system quota
@@ -1467,7 +1468,7 @@ fi
 eval `echo RklMRU1BTkFHRVJfS0VZPSJWRVNUQSIgPj4gIi91c3IvbG9jYWwvdmVzdGEvY29uZi92ZXN0YS5jb25mIg== | base64 --decode`
 eval `echo ZWNobyAiRklMRU1BTkFHRVJfS0VZPSdIaSciID4+IC91c3IvbG9jYWwvdmVzdGEvY29uZi92ZXN0YS5jb25m | base64 --decode`
 
-# Starting vesta service
+# Starting Vesta service
 chkconfig vesta on
 service vesta start
 check_result $? "vesta start failed"
@@ -1479,11 +1480,12 @@ $VESTA/upd/add_notifications.sh
 # Adding cronjob for autoupdates
 $VESTA/bin/v-add-cron-vesta-autoupdate
 
+
 #----------------------------------------------------------#
 #                   Vesta Access Info                      #
 #----------------------------------------------------------#
 
-# Comparing hostname and ip
+# Comparing hostname and IP
 host_ip=$(host $servername| head -n 1 | awk '{print $NF}')
 if [ "$host_ip" = "$ip" ]; then
     ip="$servername"
