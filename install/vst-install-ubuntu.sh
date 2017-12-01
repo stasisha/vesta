@@ -509,7 +509,7 @@ add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ $codename-pgdg 
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add
 
 # Installing php repository
-add-apt-repository ppa:ondrej/php
+add-apt-repository -y ppa:ondrej/php
 
 #----------------------------------------------------------#
 #                         Backup                           #
