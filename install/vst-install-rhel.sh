@@ -1220,6 +1220,15 @@ if [ "$postgresql96" = 'yes' ]; then
     wget $base"/web/edit/server/postgresql-9.6/index.php" -O $VESTA"/web/edit/server/postgresql-9.6/index.php"
     sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$vpass'"
 fi
+if [ "$postgresql10" = 'yes' ]; then
+    /usr/pgsql-10/bin/postgresql10-setup initdb
+    systemctl enable postgresql-10.service
+    wget $base"/install/rhel/7/postgresql/pg_hba.conf" -O "/var/lib/pgsql/9.6/data/pg_hba.conf"
+    systemctl start postgresql-10.service
+    mkdir $VESTA"/web/edit/server/postgresql-10"
+    wget $base"/web/edit/server/postgresql-10/index.php" -O $VESTA"/web/edit/server/postgresql-10/index.php"
+    sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$vpass'"
+fi
 
 #----------------------------------------------------------#
 #                      Configure Bind                      #
@@ -1441,7 +1450,7 @@ if [ "$mysql" = 'yes' ]; then
 fi
 
 # Configuring PostgreSQL host
-if [ "$postgresql" = 'yes' ]; then
+if [ "$postgresql" = 'yes' ] ||  [ "$postgresql9.6" = 'yes' ] ||  [ "$postgresql10" = 'yes' ]; then
     $VESTA/bin/v-add-database-host pgsql localhost postgres $vpass
     $VESTA/bin/v-add-database admin db db $(gen_pass) pgsql
 fi
