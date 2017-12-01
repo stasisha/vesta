@@ -30,7 +30,7 @@ if [ "$release" -eq 7 ]; then
     openssh-clients ImageMagick curl mc screen ftp zip unzip flex sqlite pcre
     sudo bc jwhois mailx lsof tar telnet rrdtool net-tools ntp GeoIP freetype
     fail2ban rsyslog iptables-services which vesta vesta-nginx vesta-php
-    vim-common expect postgresql96-server git mc"
+    vim-common expect postgresql96-server postgresql10-server git mc"
 else
     software="nginx httpd mod_ssl mod_ruid2 mod_fcgid mod_extract_forwarded
     php php-common php-cli php-bcmath php-gd php-imap php-mbstring php-mcrypt
@@ -535,7 +535,7 @@ yum install -y https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x8
 mkdir -p $vst_backups
 cd $vst_backups
 mkdir nginx httpd php php-fpm vsftpd proftpd named exim dovecot clamd \
-    spamassassin mysql postgresql mongodb vesta pgsql9.6 pgsql10
+    spamassassin mysql postgresql mongodb vesta postgresql9.6 postgresql10
 
 # Backing up Nginx configuration
 service nginx stop > /dev/null 2>&1
@@ -616,7 +616,8 @@ service postgresql stop > /dev/null 2>&1
 service postgresql-9.6 > /dev/null 2>&1
 service postgresql-10 > /dev/null 2>&1
 mv /var/lib/pgsql/data $vst_backups/postgresql/  >/dev/null 2>&1
-mv /var/lib/pgsql/9.6 $vst_backups/postgresql10/  >/dev/null 2>&1
+mv /var/lib/pgsql/9.6 $vst_backups/postgresql9.6/  >/dev/null 2>&1
+mv /var/lib/pgsql/10 $vst_backups/postgresql10/  >/dev/null 2>&1
 
 
 # Backing up Vesta configuration and data

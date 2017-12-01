@@ -1,7 +1,5 @@
-[Vesta Control Panel](http://vestacp.com/)
+[Vesta Control Panel](https://stasisha.github.io/vesta/)
 ==================================================
-
-[![Join the chat at https://gitter.im/vesta-cp/Lobby](https://badges.gitter.im/vesta-cp/Lobby.svg)](https://gitter.im/vesta-cp/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 * Vesta is an open source hosting control panel.
 * Vesta has a clean and focused interface without the clutter.
@@ -9,7 +7,7 @@
 
 How to install
 ----------------------------
-If the above example does not work, try this 3 step method:
+
 Connect to your server as root via SSH
 ```bash
 ssh root@your.server
@@ -29,5 +27,5 @@ Install [helper](https://stasisha.github.io/vesta/)
 
 License
 ----------------------------
-Vesta is licensed under  [GPL v3 ](https://github.com/serghey-rodin/vesta/blob/master/LICENSE) license
+Vesta is licensed under  [GPL v3 ](https://github.com/stasisha/vesta/blob/master/LICENSE) license
 
