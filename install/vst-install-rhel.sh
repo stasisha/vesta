@@ -1081,7 +1081,7 @@ fi
 
 if [ "$phpfpm72" = 'yes' ]; then
   backend_port=$((backend_port + 1))
-  sed -i "s/9000/"$backend_port"/" "/etc/opt/remi/php72/php-fpm.d/www.conf"
+  sed -i "s/9000/"$backend_port"/" /etc/opt/remi/php72/php-fpm.d/www.conf
   systemctl start php72-php-fpm.service
   systemctl enable php72-php-fpm.service
   mkdir $VESTA"/web/edit/server/php72-php-fpm"
