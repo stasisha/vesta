@@ -416,7 +416,6 @@ fi
 if [ "$iptables" = 'yes' ] && [ "$fail2ban" = 'yes' ]; then
     echo -n ' + Fail2Ban'
 fi
-
 echo -e "\n\n"
 
 # Asking for confirmation to proceed
@@ -434,7 +433,7 @@ if [ "$interactive" = 'yes' ]; then
 
     # Asking to set FQDN hostname
     if [ -z "$servername" ]; then
-        read -p "Please enter FQDN hostname [$(hostname)]: " servername
+        read -p "Please enter FQDN hostname [$(hostname -f)]: " servername
     fi
 fi
 
@@ -497,10 +496,6 @@ fi
 echo "#----------------------------------------------------------#"
 echo "#                  Install repositories                    #"
 echo "#----------------------------------------------------------#"
-# Updating system packages
-echo "Updating system packages"
-yum -y update
-check_result $? 'yum update failed'
 
 # Installing EPEL repository
 echo "Installing EPEL repository"
@@ -654,12 +649,11 @@ mv /root/.my.cnf  $vst_backups/mysql > /dev/null 2>&1
 # Backing up PostgreSQL configuration and data
 echo "Backing up PostgreSQL configuration and data"
 service postgresql stop > /dev/null 2>&1
-service postgresql-9.6 > /dev/null 2>&1
-service postgresql-10 > /dev/null 2>&1
+service postgresql-9.6 stop > /dev/null 2>&1
+service postgresql-10 stop > /dev/null 2>&1
 mv /var/lib/pgsql/data $vst_backups/postgresql/  >/dev/null 2>&1
 mv /var/lib/pgsql/9.6 $vst_backups/postgresql9.6/  >/dev/null 2>&1
 mv /var/lib/pgsql/10 $vst_backups/postgresql10/  >/dev/null 2>&1
-
 
 # Backing up Vesta configuration and data
 echo "Backing up Vesta configuration and data"
@@ -669,7 +663,7 @@ mv $VESTA/conf/* $vst_backups/vesta > /dev/null 2>&1
 
 
 #----------------------------------------------------------#
-#                     Package Exludes                      #
+#                     Package Excludes                     #
 #----------------------------------------------------------#
 
 # Excluding packages
@@ -1589,7 +1583,7 @@ if [ ! -z "$pub_ip" ] && [ "$pub_ip" != "$ip" ]; then
     ip=$pub_ip
 fi
 
-# Configuring MySQL host
+# Configuring MySQL/MariaDB host
 if [ "$mysql" = 'yes' ]; then
     echo "Configuring MySQL host"
     $VESTA/bin/v-add-database-host mysql localhost root $vpass
@@ -1657,7 +1651,9 @@ echo "Adding cronjob for autoupdates"
 $VESTA/bin/v-add-cron-vesta-autoupdate
 
 
-
+#----------------------------------------------------------#
+#                   Vesta Access Info                      #
+#----------------------------------------------------------#
 
 # Comparing hostname and IP
 host_ip=$(host $servername| head -n 1 | awk '{print $NF}')

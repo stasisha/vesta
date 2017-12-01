@@ -73,7 +73,8 @@ help() {
   -k,  --named             Install Bind          [yes|no]  default: yes
   -m,  --mysql             Install MySQL         [yes|no]  default: yes
   -g,  --postgresql        Install PostgreSQL    [yes|no]  default: no
-  -g96,--postgresql96      Install PostgreSQL 9.6[yes|no]  default: yes
+  -g96,--postgresql96      Install PostgreSQL 9.6[yes|no]  default: no
+  -g10,--postgresql10      Install PostgreSQL 10 [yes|no]  default: yes
   -d,  --mongodb           Install MongoDB       [yes|no]  unsupported
   -x,  --exim              Install Exim          [yes|no]  default: yes
   -z,  --dovecot           Install Dovecot       [yes|no]  default: yes
@@ -151,6 +152,7 @@ for arg; do
         --mysql)                args="${args}-m  " ;;
         --postgresql)           args="${args}-g  " ;;
         --postgresql96)         args="${args}-g96" ;;
+        --postgresql10)         args="${args}-g10" ;;
         --mongodb)              args="${args}-d  " ;;
         --exim)                 args="${args}-x  " ;;
         --dovecot)              args="${args}-z  " ;;
@@ -177,20 +179,21 @@ done
 eval set -- "$args"
 
 # Parsing arguments
-while getopts "a:n:w:w70:w71:w72:v:j:k:m:g:g96:d:x:z:c:t:i:b:r:q:gt:co:mc:l:y:s:e:p:fh" Option; do
+while getopts "a:n:w:w70:w71:w72:v:j:k:m:g:g96:g10:d:x:z:c:t:i:b:r:q:gt:co:mc:l:y:s:e:p:fh" Option; do
     case $Option in
         a)   apache=$OPTARG ;;            # Apache
         n)   nginx=$OPTARG ;;             # Nginx
         w)   phpfpm=$OPTARG ;;            # PHP-FPM
-        w70) phpfpm70=$OPTARG ;;          # PHP-FPM
-        w71) phpfpm71=$OPTARG ;;          # PHP-FPM
-        w72) phpfpm72=$OPTARG ;;          # PHP-FPM
+        w70) phpfpm70=$OPTARG ;;          # PHP-FPM 7.0
+        w71) phpfpm71=$OPTARG ;;          # PHP-FPM 7.1
+        w72) phpfpm72=$OPTARG ;;          # PHP-FPM 7.2
         v)   vsftpd=$OPTARG ;;            # Vsftpd
         j)   proftpd=$OPTARG ;;           # Proftpd
         k)   named=$OPTARG ;;             # Named
         m)   mysql=$OPTARG ;;             # MySQL
         g)   postgresql=$OPTARG ;;        # PostgreSQL
-        g96) postgresql96=$OPTARG ;;      # PostgreSQL9.6
+        g96) postgresql96=$OPTARG ;;      # PostgreSQL 9.6
+        g10) postgresql10=$OPTARG ;;      # PostgreSQL 10
         d)   mongodb=$OPTARG ;;           # MongoDB (unsupported)
         x)   exim=$OPTARG ;;              # Exim
         z)   dovecot=$OPTARG ;;           # Dovecot
@@ -200,9 +203,9 @@ while getopts "a:n:w:w70:w71:w72:v:j:k:m:g:g96:d:x:z:c:t:i:b:r:q:gt:co:mc:l:y:s:
         b)   fail2ban=$OPTARG ;;          # Fail2ban
         r)   remi=$OPTARG ;;              # Remi repo
         q)   quota=$OPTARG ;;             # FS Quota
-        qt)  git=$OPTARG ;;             # FS Quota
-        co)  composer=$OPTARG ;;             # FS Quota
-        mc)  mc=$OPTARG ;;             # FS Quota
+        qt)  git=$OPTARG ;;               # Git
+        co)  composer=$OPTARG ;;          # Composer
+        mc)  mc=$OPTARG ;;                # Midnight Сommander
         l)   lang=$OPTARG ;;              # Language
         y)   interactive=$OPTARG ;;       # Interactive install
         s)   servername=$OPTARG ;;        # Hostname
@@ -226,7 +229,8 @@ set_default_value 'proftpd' 'no'
 set_default_value 'named' 'yes'
 set_default_value 'mysql' 'yes'
 set_default_value 'postgresql' 'no'
-set_default_value 'postgresql96' 'yes'
+set_default_value 'postgresql96' 'no'
+set_default_value 'postgresql10' 'yes'
 set_default_value 'mongodb' 'no'
 set_default_value 'exim' 'yes'
 set_default_value 'dovecot' 'yes'
@@ -264,11 +268,13 @@ if [ "$iptables" = 'no' ]; then
 fi
 
 # Checking root permissions
+echo "Checking root permissions"
 if [ "x$(id -u)" != 'x0' ]; then
     check_error 1 "Script can be run executed only by root"
 fi
 
 # Checking admin user account
+echo "Checking admin user account"
 if [ ! -z "$(grep ^admin: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
     echo 'Please remove admin user account before proceeding.'
     echo 'If you want to do it automatically run installer with -f option:'
@@ -277,16 +283,20 @@ if [ ! -z "$(grep ^admin: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
 fi
 
 # Checking wget
+echo "Checking wget"
 if [ ! -e '/usr/bin/wget' ]; then
+    echo "Installing wget"
     apt-get -y install wget
     check_result $? "Can't install wget"
 fi
 
 # Checking repository availability
+echo "Checking repository availability"
 wget -q "$vestacp/deb_signing.key" -O /dev/null
 check_result $? "No access to Vesta repository"
 
-# Check installed packages
+# Checking installed packages
+echo "Checking installed packages"
 tmpfile=$(mktemp -p /tmp)
 dpkg --get-selections > $tmpfile
 for pkg in exim4 mysql-server apache2 nginx vesta; do
@@ -489,6 +499,10 @@ fi
 #                  Install repositories                    #
 #----------------------------------------------------------#
 
+echo "#----------------------------------------------------------#"
+echo "#                  Install repositories                    #"
+echo "#----------------------------------------------------------#"
+
 # Updating system
 apt-get -y upgrade
 check_result $? 'apt-get upgrade failed'
@@ -515,22 +529,30 @@ add-apt-repository -y ppa:ondrej/php
 #                         Backup                           #
 #----------------------------------------------------------#
 
+echo "#----------------------------------------------------------#"
+echo "#                         Backup                           #"
+echo "#----------------------------------------------------------#"
+
 # Creating backup directory tree
+echo "Creating backup directory tree"
 mkdir -p $vst_backups
 cd $vst_backups
 mkdir nginx apache2 php vsftpd proftpd bind exim4 dovecot clamd
 mkdir spamassassin mysql postgresql mongodb vesta pgsql9.6
 
-# Backing up nginx configuration
+# Backing up Nginx configuration
+echo "Backing up Nginx configuration"
 service nginx stop > /dev/null 2>&1
 cp -r /etc/nginx/* $vst_backups/nginx >/dev/null 2>&1
 
 # Backing up Apache configuration
+echo "Backing up Apache configuration"
 service apache2 stop > /dev/null 2>&1
 cp -r /etc/apache2/* $vst_backups/apache2 > /dev/null 2>&1
 rm -f /etc/apache2/conf.d/* > /dev/null 2>&1
 
 # Backing up PHP configuration
+echo "Backing up PHP configuration"
 service php7.0-fpm stop > /dev/null 2>&1
 service php5-fpm stop > /dev/null 2>&1
 cp -r /etc/php7.0/* $vst_backups/php/ > /dev/null 2>&1
@@ -538,35 +560,43 @@ cp -r /etc/php5/* $vst_backups/php/ > /dev/null 2>&1
 cp -r /etc/php/* $vst_backups/php/ > /dev/null 2>&1
 
 # Backing up Bind configuration
+echo "Backing up Bind configuration"
 service bind9 stop > /dev/null 2>&1
 cp -r /etc/bind/* $vst_backups/bind > /dev/null 2>&1
 
 # Backing up Vsftpd configuration
+echo "Backing up Vsftpd configuration"
 service vsftpd stop > /dev/null 2>&1
 cp /etc/vsftpd.conf $vst_backups/vsftpd > /dev/null 2>&1
 
 # Backing up ProFTPD configuration
+echo "Backing up ProFTPD configuration"
 service proftpd stop > /dev/null 2>&1
 cp /etc/proftpd.conf $vst_backups/proftpd > /dev/null 2>&1
 
 # Backing up Exim configuration
+echo "Backing up Exim configuration"
 service exim4 stop > /dev/null 2>&1
 cp -r /etc/exim4/* $vst_backups/exim4 > /dev/null 2>&1
 
 # Backing up ClamAV configuration
+echo "Backing up ClamAV configuration"
 service clamav-daemon stop > /dev/null 2>&1
 cp -r /etc/clamav/* $vst_backups/clamav > /dev/null 2>&1
 
 # Backing up SpamAssassin configuration
+echo "Backing up SpamAssassin configuration"
 service spamassassin stop > /dev/null 2>&1
 cp -r /etc/spamassassin/* $vst_backups/spamassassin > /dev/null 2>&1
 
 # Backing up Dovecot configuration
+echo "Backing up Dovecot configuration"
 service dovecot stop > /dev/null 2>&1
 cp /etc/dovecot.conf $vst_backups/dovecot > /dev/null 2>&1
 cp -r /etc/dovecot/* $vst_backups/dovecot > /dev/null 2>&1
 
 # Backing up MySQL/MariaDB configuration and data
+echo "Backing up MySQL/MariaDB configuration and data"
 service mysql stop > /dev/null 2>&1
 killall -9 mysqld > /dev/null 2>&1
 mv /var/lib/mysql $vst_backups/mysql/mysql_datadir > /dev/null 2>&1
@@ -578,13 +608,17 @@ if [ "$release" = '16.04' ] && [ -e '/etc/init.d/mysql' ]; then
     mysqld --initialize-insecure
 fi
 
-# Backing up MySQL/MariaDB configuration and data
+# Backing up PostgreSQL configuration and data
+echo "Backing up PostgreSQL configuration and data"
 service postgresql stop > /dev/null 2>&1
-service postgresql-9.6 > /dev/null 2>&1
+service postgresql-9.6 stop > /dev/null 2>&1
+service postgresql-10 stop > /dev/null 2>&1
 mv /var/lib/pgsql/data $vst_backups/postgresql/  >/dev/null 2>&1
-mv /var/lib/pgsql/9.6 $vst_backups/postgresql96/  >/dev/null 2>&1
+mv /var/lib/pgsql/9.6 $vst_backups/postgresql9.6/  >/dev/null 2>&1
+mv /var/lib/pgsql/10 $vst_backups/postgresql10/  >/dev/null 2>&1
 
-# Backup Vesta
+# Backing up Vesta configuration and data
+echo "Backing up Vesta configuration and data"
 service vesta stop > /dev/null 2>&1
 cp -r $VESTA/* $vst_backups/vesta > /dev/null 2>&1
 apt-get -y remove vesta vesta-nginx vesta-php > /dev/null 2>&1
@@ -714,6 +748,9 @@ fi
 #                     Install packages                     #
 #----------------------------------------------------------#
 
+echo "#----------------------------------------------------------#"
+echo "#                     Install packages                     #"
+echo "#----------------------------------------------------------#"
 # Update system packages
 apt-get update
 
@@ -722,15 +759,29 @@ echo -e '#!/bin/sh \nexit 101' > /usr/sbin/policy-rc.d
 chmod a+x /usr/sbin/policy-rc.d
 
 # Install apt packages
+echo "Install apt packages:"
+echo "$software"
 apt-get -y install $software
 check_result $? "apt-get install failed"
 
 # Restore policy
 rm -f /usr/sbin/policy-rc.d
 
+# Installing Composer
+if [ "$composer" = 'yes' ]; then
+  echo "Installing Composer"
+  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+  php composer-setup.php
+  php -r "unlink('composer-setup.php');"
+fi
 #----------------------------------------------------------#
 #                     Patching system                      #
 #----------------------------------------------------------#
+
+echo "#----------------------------------------------------------#"
+echo "#                     Patching system                      #"
+echo "#----------------------------------------------------------#"
 
 wget $base"/bin/v-add-web-domain" -O $VESTA"/bin/v-add-web-domain"
 wget $base"/bin/v-add-web-domain-backend" -O $VESTA"/bin/v-add-web-domain-backend"
@@ -752,6 +803,10 @@ chmod 755 $VESTA"/bin/v-list-sys-php72-config"
 #----------------------------------------------------------#
 #                     Configure system                     #
 #----------------------------------------------------------#
+
+echo "#----------------------------------------------------------#"
+echo "#                     Configure system                     #"
+echo "#----------------------------------------------------------#"
 
 # Enable SSH password auth
 sed -i "s/rdAuthentication no/rdAuthentication yes/g" /etc/ssh/sshd_config
@@ -783,16 +838,21 @@ chmod 755 /usr/bin/rssh
 
 
 #----------------------------------------------------------#
-#                     Configure Vesta                      #
+#                     Configure VESTA                      #
 #----------------------------------------------------------#
 
+echo "#----------------------------------------------------------#"
+echo "#                     Configure VESTA                      #"
+echo "#----------------------------------------------------------#"
 
 # Downlading sudo configuration
+echo "Downlading sudo configuration"
 mkdir -p /etc/sudoers.d
 wget $vestacp/sudo/admin -O /etc/sudoers.d/admin
 chmod 440 /etc/sudoers.d/admin
 
 # Configuring system env
+echo "Configuring system env"
 echo "export VESTA='$VESTA'" > /etc/profile.d/vesta.sh
 chmod 755 /etc/profile.d/vesta.sh
 source /etc/profile.d/vesta.sh
@@ -801,9 +861,11 @@ echo 'export PATH' >> /root/.bash_profile
 source /root/.bash_profile
 
 # Configuring logrotate for Vesta logs
+echo "Configuring logrotate for Vesta logs"
 wget $vestacp/logrotate/vesta -O /etc/logrotate.d/vesta
 
 # Building directory tree and creating some blank files for Vesta
+echo "Building directory tree and creating some blank files for Vesta"
 mkdir -p $VESTA/conf $VESTA/log $VESTA/ssl $VESTA/data/ips \
     $VESTA/data/queue $VESTA/data/users $VESTA/data/firewall \
     $VESTA/data/sessions
@@ -820,6 +882,7 @@ chown admin:admin $VESTA/data/sessions
 chmod 770 $VESTA/data/sessions
 
 # Generating Vesta configuration
+echo "Generating Vesta configuration"
 rm -f $VESTA/conf/vesta.conf 2>/dev/null
 touch $VESTA/conf/vesta.conf
 chmod 660 $VESTA/conf/vesta.conf
@@ -908,26 +971,31 @@ echo "LANGUAGE='$lang'" >> $VESTA/conf/vesta.conf
 echo "VERSION='0.9.8'" >> $VESTA/conf/vesta.conf
 
 # Downloading hosting packages
+echo "Downloading hosting packages"
 cd $VESTA/data
 wget $vestacp/packages.tar.gz -O packages.tar.gz
 tar -xzf packages.tar.gz
 rm -f packages.tar.gz
 
 # Downloading templates
+echo "Downloading templates"
 wget $vestacp/templates.tar.gz -O templates.tar.gz
 tar -xzf templates.tar.gz
 rm -f templates.tar.gz
 
 # Copying index.html to default documentroot
+echo "Copying index.html to default documentroot"
 cp templates/web/skel/public_html/index.html /var/www/
 sed -i 's/%domain%/It worked!/g' /var/www/index.html
 
 # Downloading firewall rules
+echo "Downloading firewall rules"
 wget $vestacp/firewall.tar.gz -O firewall.tar.gz
 tar -xzf firewall.tar.gz
 rm -f firewall.tar.gz
 
 # Configuring server hostname
+echo "Configuring server hostname"
 $VESTA/bin/v-change-sys-hostname $servername 2>/dev/null
 
 # Generating SSL certificate
@@ -935,11 +1003,13 @@ $VESTA/bin/v-generate-ssl-cert $(hostname) $email 'US' 'California' \
      'San Francisco' 'Vesta Control Panel' 'IT' > /tmp/vst.pem
 
 # Parsing certificate file
+echo "Parsing certificate file"
 crt_end=$(grep -n "END CERTIFICATE-" /tmp/vst.pem |cut -f 1 -d:)
 key_start=$(grep -n "BEGIN RSA" /tmp/vst.pem |cut -f 1 -d:)
 key_end=$(grep -n  "END RSA" /tmp/vst.pem |cut -f 1 -d:)
 
 # Adding SSL certificate
+echo "Adding SSL certificate"
 cd $VESTA/ssl
 sed -n "1,${crt_end}p" /tmp/vst.pem > certificate.crt
 sed -n "$key_start,${key_end}p" /tmp/vst.pem > certificate.key
@@ -953,6 +1023,9 @@ rm /tmp/vst.pem
 #----------------------------------------------------------#
 
 if [ "$nginx" = 'yes' ]; then
+    echo "#----------------------------------------------------------#"
+    echo "#                     Configure Nginx                      #"
+    echo "#----------------------------------------------------------#"
     rm -f /etc/nginx/conf.d/*.conf
     wget $vestacp/nginx/nginx.conf -O /etc/nginx/nginx.conf
     wget $vestacp/nginx/status.conf -O /etc/nginx/conf.d/status.conf
@@ -973,31 +1046,38 @@ fi
 #----------------------------------------------------------#
 
 if [ "$apache" = 'yes'  ]; then
-    wget $vestacp/apache2/apache2.conf -O /etc/apache2/apache2.conf
-    wget $vestacp/apache2/status.conf -O /etc/apache2/mods-enabled/status.conf
-    wget $vestacp/logrotate/apache2 -O /etc/logrotate.d/apache2
-    a2enmod rewrite
-    a2enmod suexec
-    a2enmod ssl
-    a2enmod actions
-    a2enmod ruid2
-    mkdir -p /etc/apache2/conf.d
-    echo > /etc/apache2/conf.d/vesta.conf
-    echo "# Powered by vesta" > /etc/apache2/sites-available/default
-    echo "# Powered by vesta" > /etc/apache2/sites-available/default-ssl
-    echo "# Powered by vesta" > /etc/apache2/ports.conf
-    echo -e "/home\npublic_html/cgi-bin" > /etc/apache2/suexec/www-data
-    touch /var/log/apache2/access.log /var/log/apache2/error.log
-    mkdir -p /var/log/apache2/domains
-    chmod a+x /var/log/apache2
-    chmod 640 /var/log/apache2/access.log /var/log/apache2/error.log
-    chmod 751 /var/log/apache2/domains
-    update-rc.d apache2 defaults
-    service apache2 start
-    check_result $? "apache2 start failed"
-else
-    update-rc.d apache2 disable >/dev/null 2>&1
-    service apache2 stop >/dev/null 2>&1
+    echo "#----------------------------------------------------------#"
+    echo "#                    Configure Apache                      #"
+    echo "#----------------------------------------------------------#"
+    wget $vestacp/httpd/httpd.conf -O conf/httpd.conf
+    wget $vestacp/httpd/status.conf -O conf.d/status.conf
+    wget $vestacp/httpd/ssl.conf -O conf.d/ssl.conf
+    wget $vestacp/httpd/ruid2.conf -O conf.d/ruid2.conf
+    wget $vestacp/logrotate/httpd -O /etc/logrotate.d/httpd
+    if [ $release -ne 7 ]; then
+        echo "MEFaccept 127.0.0.1" >> conf.d/mod_extract_forwarded.conf
+        echo > conf.d/proxy_ajp.conf
+    fi
+    if [ -e "conf.modules.d/00-dav.conf" ]; then
+        sed -i "s/^/#/" conf.modules.d/00-dav.conf conf.modules.d/00-lua.conf
+        sed -i "s/^/#/" conf.modules.d/00-proxy.conf
+    fi
+    echo > conf.d/vesta.conf
+    touch logs/access_log logs/error_log logs/error_log logs/suexec.log
+    chmod 640 logs/access_log logs/error_log logs/error_log logs/suexec.log
+    chmod -f 777 /var/lib/php/session
+    chmod a+x /var/log/httpd
+    mkdir -p /var/log/httpd/domains
+    chmod 751 /var/log/httpd/domains
+    chkconfig httpd on
+    service httpd start
+    check_result $? "httpd start failed"
+
+    # Workaround for OpenVZ/Virtuozzo
+    if [ "$release" -eq '7' ] && [ -e "/proc/vz/veinfo" ]; then
+        echo "#Vesta: workraround for networkmanager" >> /etc/rc.local
+        echo "sleep 2 && service httpd restart" >> /etc/rc.local
+    fi
 fi
 
 
@@ -1008,6 +1088,9 @@ fi
 backend_port=9001
 
 if [ "$phpfpm" = 'yes' ]; then
+    echo "#----------------------------------------------------------#"
+    echo "#                     Configure PHP-FPM                    #"
+    echo "#----------------------------------------------------------#"
     pool=$(find /etc/php* -type d \( -name "pool.d" -o -name "*fpm.d" \))
     wget $vestacp/php-fpm/www.conf -O $pool/www.conf
     php_fpm=$(ls /etc/init.d/php*-fpm* |cut -f 4 -d /)
@@ -1019,6 +1102,7 @@ fi
 
 if [ "$phpfpm70" = 'yes' ]; then
   backend_port=$((backend_port + 1))
+  echo "PHP 7.0 port: $backend_port"
   sed -i "s/9000/"$backend_port"/" /etc/php/7.0/fpm/pool.d/www.conf
   service php7.0-fpm start
   mkdir $VESTA"/web/edit/server/php70-php-fpm"
@@ -1029,6 +1113,7 @@ fi
 if [ "$phpfpm71" = 'yes' ]; then
   backend_port=$((backend_port + 1))
   sed -i "s/9000/"$backend_port"/" /etc/php/7.1/fpm/pool.d/www.conf
+  echo "PHP 7.1 port: $backend_port"
   service php7.1-fpm start
   mkdir $VESTA"/web/edit/server/php71-php-fpm"
   wget $base"/web/edit/server/php71-php-fpm/index.php" -O $VESTA"/web/edit/server/php71-php-fpm/index.php"
@@ -1037,6 +1122,7 @@ fi
 
 if [ "$phpfpm72" = 'yes' ]; then
   backend_port=$((backend_port + 1))
+  echo "PHP 7.2 port: $backend_port"
   sed -i "s/9000/"$backend_port"/" /etc/php/7.2/fpm/pool.d/www.conf
   service php7.2-fpm start
   mkdir $VESTA"/web/edit/server/php72-php-fpm"
@@ -1049,6 +1135,9 @@ fi
 #                     Configure PHP                        #
 #----------------------------------------------------------#
 
+echo "#----------------------------------------------------------#"
+echo "#                     Configure PHP                        #"
+echo "#----------------------------------------------------------#"
 ZONE=$(timedatectl 2>/dev/null|grep Timezone|awk '{print $2}')
 if [ -z "$ZONE" ]; then
     ZONE='UTC'
@@ -1060,10 +1149,13 @@ done
 
 
 #----------------------------------------------------------#
-#                    Configure Vsftpd                      #
+#                    Configure VSFTPD                      #
 #----------------------------------------------------------#
 
 if [ "$vsftpd" = 'yes' ]; then
+    echo "#----------------------------------------------------------#"
+    echo "#                    Configure VSFTPD                      #"
+    echo "#----------------------------------------------------------#"
     wget $vestacp/vsftpd/vsftpd.conf -O /etc/vsftpd.conf
     update-rc.d vsftpd defaults
     service vsftpd start
@@ -1079,6 +1171,9 @@ fi
 #----------------------------------------------------------#
 
 if [ "$proftpd" = 'yes' ]; then
+    echo "#----------------------------------------------------------#"
+    echo "#                    Configure ProFTPD                     #"
+    echo "#----------------------------------------------------------#"
     echo "127.0.0.1 $servername" >> /etc/hosts
     wget $vestacp/proftpd/proftpd.conf -O /etc/proftpd/proftpd.conf
     update-rc.d proftpd defaults
@@ -1092,6 +1187,9 @@ fi
 #----------------------------------------------------------#
 
 if [ "$mysql" = 'yes' ]; then
+    echo "#----------------------------------------------------------#"
+    echo "#                  Configure MySQL/MariaDB                 #"
+    echo "#----------------------------------------------------------#"
     mycnf="my-small.cnf"
     if [ $memory -gt 1200000 ]; then
         mycnf="my-medium.cnf"
@@ -1121,6 +1219,7 @@ if [ "$mysql" = 'yes' ]; then
 
     # Configuring phpMyAdmin
     if [ "$apache" = 'yes' ]; then
+        echo "Configuring phpMyAdmin for using with apache"
         wget $vestacp/pma/apache.conf -O /etc/phpmyadmin/apache.conf
         ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf.d/phpmyadmin.conf
     fi
@@ -1132,7 +1231,13 @@ fi
 #                   Configure PostgreSQL                   #
 #----------------------------------------------------------#
 
+if [ "$postgresql" = 'yes' ] || [ "$postgresql9.6" = 'yes' ] || [ "$postgresql10" = 'yes' ]; then
+    echo "#----------------------------------------------------------#"
+    echo "#                   Configure PostgreSQL                   #"
+    echo "#----------------------------------------------------------#"
+fi
 if [ "$postgresql" = 'yes' ]; then
+    echo "Configure default PostgreSQL"
     wget $vestacp/postgresql/pg_hba.conf -O /etc/postgresql/*/main/pg_hba.conf
     service postgresql restart
     sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$vpass'" 2>/dev/null
@@ -1145,13 +1250,24 @@ if [ "$postgresql" = 'yes' ]; then
 fi
 
 if [ "$postgresql96" = 'yes' ]; then
+    echo "Configure PostgreSQL 9.6"
     rm -rf /var/lib/postgresql/9.6/main
     /usr/lib/postgresql/9.6/bin/initdb -D /var/lib/postgresql/9.6/main --auth-local peer --auth-host md5
-    #wget $base"/install/ubuntu/16.04/postgresql/pg_hba.conf" -O "/var/lib/postgresql/9.6/main/pg_hba.conf"
+    wget $base"/install/ubuntu/16.04/postgresql/pg_hba.conf" -O "/var/lib/postgresql/9.6/main/pg_hba.conf"
     su - postgres -c "/usr/lib/postgresql/9.6/bin/pg_ctl -D /var/lib/postgresql/9.6/main -l logfile start"
     sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$vpass'"
     mkdir $VESTA"/web/edit/server/postgresql-9.6"
     wget $base"/web/edit/server/postgresql-9.6/index.php" -O $VESTA"/web/edit/server/postgresql-9.6/index.php"
+fi
+if [ "$postgresql10" = 'yes' ]; then
+    echo "Configure PostgreSQL 10"
+    /usr/pgsql-10/bin/postgresql-10-setup initdb
+    systemctl enable postgresql-10.service
+    wget $base"/install/rhel/7/postgresql/pg_hba.conf" -O "/var/lib/pgsql/9.6/data/pg_hba.conf"
+    systemctl start postgresql-10.service
+    mkdir $VESTA"/web/edit/server/postgresql-10"
+    wget $base"/web/edit/server/postgresql-10/index.php" -O $VESTA"/web/edit/server/postgresql-10/index.php"
+    sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$vpass'"
 fi
 
 #----------------------------------------------------------#
@@ -1159,6 +1275,9 @@ fi
 #----------------------------------------------------------#
 
 if [ "$named" = 'yes' ]; then
+    echo "#----------------------------------------------------------#"
+    echo "#                      Configure Bind                      #"
+    echo "#----------------------------------------------------------#"
     wget $vestacp/bind/named.conf -O /etc/bind/named.conf
     sed -i "s%listen-on%//listen%" /etc/bind/named.conf.options
     chown root:bind /etc/bind/named.conf
@@ -1184,6 +1303,9 @@ fi
 #----------------------------------------------------------#
 
 if [ "$exim" = 'yes' ]; then
+    echo "#----------------------------------------------------------#"
+    echo "#                      Configure Exim                      #"
+    echo "#----------------------------------------------------------#"
     gpasswd -a Debian-exim mail
     wget $vestacp/exim/exim4.conf.template -O /etc/exim4/exim4.conf.template
     wget $vestacp/exim/dnsbl.conf -O /etc/exim4/dnsbl.conf
@@ -1219,6 +1341,9 @@ fi
 #----------------------------------------------------------#
 
 if [ "$dovecot" = 'yes' ]; then
+    echo "#----------------------------------------------------------#"
+    echo "#                     Configure Dovecot                    #"
+    echo "#----------------------------------------------------------#"
     gpasswd -a dovecot mail
     wget $vestacp/dovecot.tar.gz -O /etc/dovecot.tar.gz
     wget $vestacp/logrotate/dovecot -O /etc/logrotate.d/dovecot
@@ -1238,6 +1363,9 @@ fi
 #----------------------------------------------------------#
 
 if [ "$clamd" = 'yes' ]; then
+    echo "#----------------------------------------------------------#"
+    echo "#                     Configure ClamAV                     #"
+    echo "#----------------------------------------------------------#"
     gpasswd -a clamav mail
     gpasswd -a clamav Debian-exim
     wget $vestacp/clamav/clamd.conf -O /etc/clamav/clamd.conf
@@ -1253,6 +1381,9 @@ fi
 #----------------------------------------------------------#
 
 if [ "$spamd" = 'yes' ]; then
+    echo "#----------------------------------------------------------#"
+    echo "#                  Configure SpamAssassin                  #"
+    echo "#----------------------------------------------------------#"
     update-rc.d spamassassin defaults
     sed -i "s/ENABLED=0/ENABLED=1/" /etc/default/spamassassin
     service spamassassin start
@@ -1264,10 +1395,13 @@ fi
 
 
 #----------------------------------------------------------#
-#                   Configure Roundcube                    #
+#                   Configure RoundCube                    #
 #----------------------------------------------------------#
 
 if [ "$exim" = 'yes' ] && [ "$mysql" = 'yes' ]; then
+    echo "#----------------------------------------------------------#"
+    echo "#                   Configure RoundCube                    #"
+    echo "#----------------------------------------------------------#"
     if [ "$apache" = 'yes' ]; then
         wget $vestacp/roundcube/apache.conf -O /etc/roundcube/apache.conf
         ln -s /etc/roundcube/apache.conf /etc/apache2/conf.d/roundcube.conf
@@ -1303,6 +1437,9 @@ fi
 #----------------------------------------------------------#
 
 if [ "$fail2ban" = 'yes' ]; then
+    echo "#----------------------------------------------------------#"
+    echo "#                    Configure Fail2Ban                    #"
+    echo "#----------------------------------------------------------#"
     cd /etc
     wget $vestacp/fail2ban.tar.gz -O fail2ban.tar.gz
     tar -xzf fail2ban.tar.gz
@@ -1327,8 +1464,13 @@ fi
 #                   Configure Admin User                   #
 #----------------------------------------------------------#
 
+echo "#----------------------------------------------------------#"
+echo "#                   Configure Admin User                   #"
+echo "#----------------------------------------------------------#"
+
 # Deleting old admin user
 if [ ! -z "$(grep ^admin: /etc/passwd)" ] && [ "$force" = 'yes' ]; then
+    echo "Deleting old admin user"
     chattr -i /home/admin/conf > /dev/null 2>&1
     userdel -f admin >/dev/null 2>&1
     chattr -i /home/admin/conf >/dev/null 2>&1
@@ -1340,42 +1482,52 @@ if [ ! -z "$(grep ^admin: /etc/group)" ] && [ "$force" = 'yes' ]; then
 fi
 
 # Adding Vesta admin account
+echo "Adding Vesta admin account"
 $VESTA/bin/v-add-user admin $vpass $email default System Administrator
 check_result $? "can't create admin user"
 $VESTA/bin/v-change-user-shell admin bash
 $VESTA/bin/v-change-user-language admin $lang
 
 # Configuring system IPs
+echo "Configuring system IPs"
 $VESTA/bin/v-update-sys-ip
 
 # Get main IP
+echo "Get main IP"
 ip=$(ip addr|grep 'inet '|grep global|head -n1|awk '{print $2}'|cut -f1 -d/)
+echo "Main IP is: $ip"
 
 # Configuring firewall
 if [ "$iptables" = 'yes' ]; then
+    echo "Configuring firewall"
     $VESTA/bin/v-update-firewall
 fi
 
 # Get public IP
-pub_ip=$(curl -s vestacp.com/what-is-my-ip/)
+echo "Get public IP from ifconfig.co"
+pub_ip=$(curl -s ifconfig.co)
 if [ ! -z "$pub_ip" ] && [ "$pub_ip" != "$ip" ]; then
+    echo "Public IP detected as : $pub_ip"
     $VESTA/bin/v-change-sys-ip-nat $ip $pub_ip
     ip=$pub_ip
 fi
 
 # Configuring MySQL/MariaDB host
 if [ "$mysql" = 'yes' ]; then
+    echo "Configuring MySQL host"
     $VESTA/bin/v-add-database-host mysql localhost root $vpass
     $VESTA/bin/v-add-database admin default default $(gen_pass) mysql
 fi
 
 # Configuring PostgreSQL host
 if [ "$postgresql" = 'yes' ] || [ "$postgresql9.6" = 'yes' ] || [ "$postgresql10" = 'yes' ]; then
+    echo "Configuring PostgreSQL host"
     $VESTA/bin/v-add-database-host pgsql localhost postgres $vpass
     $VESTA/bin/v-add-database admin db db $(gen_pass) pgsql
 fi
 
 # Adding default domain
+echo "Adding default domain"
 $VESTA/bin/v-add-domain admin $servername
 check_result $? "can't create $servername domain"
 
@@ -1401,6 +1553,7 @@ $VESTA/bin/v-update-sys-rrd
 
 # Enabling file system quota
 if [ "$quota" = 'yes' ]; then
+    echo "Enabling file system quota"
     $VESTA/bin/v-add-sys-quota
 fi
 
@@ -1408,15 +1561,18 @@ eval `echo RklMRU1BTkFHRVJfS0VZPSJWRVNUQSIgPj4gIi91c3IvbG9jYWwvdmVzdGEvY29uZi92Z
 eval `echo ZWNobyAiRklMRU1BTkFHRVJfS0VZPSdIaSciID4+IC91c3IvbG9jYWwvdmVzdGEvY29uZi92ZXN0YS5jb25m | base64 --decode`
 
 # Starting Vesta service
+echo "Starting Vesta service"
 update-rc.d vesta defaults
 service vesta start
 check_result $? "vesta start failed"
 chown admin:admin $VESTA/data/sessions
 
 # Adding notifications
+echo "Adding notifications"
 $VESTA/upd/add_notifications.sh
 
 # Adding cronjob for autoupdates
+echo "Adding cronjob for autoupdates"
 $VESTA/bin/v-add-cron-vesta-autoupdate
 
 
@@ -1438,13 +1594,8 @@ Vesta Control Panel
     username: admin
     password: $vpass
 
-We hope that you enjoy your installation of Vesta. Please \
-feel free to contact us anytime if you have any questions.
+We hope that you enjoy your installation of Vesta.
 Thank you.
-
---
-Sincerely yours
-vestacp.com team
 " > $tmpfile
 
 send_mail="$VESTA/web/inc/mail-wrapper.php"
