@@ -1222,7 +1222,7 @@ if [ "$postgresql96" = 'yes' ]; then
     sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$vpass'"
 fi
 if [ "$postgresql10" = 'yes' ]; then
-    /usr/pgsql-10/bin/postgresql10-setup initdb
+    /usr/pgsql-10/bin/postgresql-10-setup initdb
     systemctl enable postgresql-10.service
     wget $base"/install/rhel/7/postgresql/pg_hba.conf" -O "/var/lib/pgsql/9.6/data/pg_hba.conf"
     systemctl start postgresql-10.service
