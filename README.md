@@ -1,4 +1,4 @@
-[Vesta Control Panel](http://vestacp.com/)
+[Vesta Control Panel](https://stasisha.github.io/vesta/)
 ==================================================
 
 [![Join the chat at https://gitter.im/vesta-cp/Lobby](https://badges.gitter.im/vesta-cp/Lobby.svg)](https://gitter.im/vesta-cp/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
