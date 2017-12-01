@@ -35,7 +35,9 @@ elif [ "$release" = '16.10' ]; then
     software="nginx apache2 apache2-utils apache2.2-common
         apache2-suexec-custom libapache2-mod-ruid2 libapache2-mod-rpaf
         libapache2-mod-fcgid libapache2-mod-php7.0 php7.0 php7.0-common php7.0-cgi
-        php7.0-mysql php7.0-curl php7.0-fpm php7.0-pgsql awstats webalizer vsftpd
+        php7.0-mysql php7.0-curl php7.0-fpm php7.0-pgsql php7.1 php7.1-common php7.1-cgi
+        php7.1-mysql php7.1-curl php7.1-fpm php7.1-pgsql php7.2 php7.2-common php7.2-cgi
+        php7.2-mysql php7.2-curl php7.2-fpm php7.2-pgsql awstats webalizer vsftpd
         proftpd-basic bind9 exim4 exim4-daemon-heavy clamav-daemon
         spamassassin dovecot-imapd dovecot-pop3d roundcube-core
         roundcube-mysql roundcube-plugins mysql-server mysql-common
@@ -618,6 +620,33 @@ if [ "$phpfpm" = 'no' ]; then
     software=$(echo "$software" | sed -e "s/php7.0-fpm//")
     software=$(echo "$software" | sed -e "s/php5-fpm//")
     software=$(echo "$software" | sed -e "s/php-fpm//")
+fi
+if [ "$phpfpm70" = 'no' ]; then
+    software=$(echo "$software" | sed -e "s/php7.0//")
+    software=$(echo "$software" | sed -e "s/php7.0-common//")
+    software=$(echo "$software" | sed -e "s/php7.0-cgi//")
+    software=$(echo "$software" | sed -e "s/php7.0-mysql//")
+    software=$(echo "$software" | sed -e "s/php7.0-curl//")
+    software=$(echo "$software" | sed -e "s/php7.0-fpm//")
+    software=$(echo "$software" | sed -e "s/php7.0-pgsql//")
+fi
+if [ "$phpfpm71" = 'no' ]; then
+    software=$(echo "$software" | sed -e "s/php7.1//")
+    software=$(echo "$software" | sed -e "s/php7.1-common//")
+    software=$(echo "$software" | sed -e "s/php7.1-cgi//")
+    software=$(echo "$software" | sed -e "s/php7.1-mysql//")
+    software=$(echo "$software" | sed -e "s/php7.1-curl//")
+    software=$(echo "$software" | sed -e "s/php7.1-fpm//")
+    software=$(echo "$software" | sed -e "s/php7.1-pgsql//")
+fi
+if [ "$phpfpm72" = 'no' ]; then
+    software=$(echo "$software" | sed -e "s/php7.2//")
+    software=$(echo "$software" | sed -e "s/php7.2-common//")
+    software=$(echo "$software" | sed -e "s/php7.2-cgi//")
+    software=$(echo "$software" | sed -e "s/php7.2-mysql//")
+    software=$(echo "$software" | sed -e "s/php7.2-curl//")
+    software=$(echo "$software" | sed -e "s/php7.2-fpm//")
+    software=$(echo "$software" | sed -e "s/php7.2-pgsql//")
 fi
 if [ "$vsftpd" = 'no' ]; then
     software=$(echo "$software" | sed -e "s/vsftpd//")
