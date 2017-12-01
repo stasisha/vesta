@@ -74,5 +74,3 @@ if [ -e '/usr/bin/curl' ]; then
         exit 1
     fi
 fi
-
-exit
