@@ -30,7 +30,7 @@ if [ "$release" = '16.04' ]; then
         mysql-client postgresql postgresql-contrib phppgadmin phpmyadmin mc
         flex whois rssh git idn zip sudo bc ftp lsof ntpdate rrdtool quota
         e2fslibs bsdutils e2fsprogs curl imagemagick fail2ban dnsutils
-        bsdmainutils cron vesta vesta-nginx vesta-php expect postgresql96-server git mc"
+        bsdmainutils cron vesta vesta-nginx vesta-php expect postgresql-9.6 git mc"
 elif [ "$release" = '16.10' ]; then
     software="nginx apache2 apache2-utils apache2.2-common
         apache2-suexec-custom libapache2-mod-ruid2 libapache2-mod-rpaf
@@ -42,7 +42,7 @@ elif [ "$release" = '16.10' ]; then
         mysql-client postgresql postgresql-contrib phppgadmin phpmyadmin mc
         flex whois rssh git idn zip sudo bc ftp lsof ntpdate rrdtool quota
         e2fslibs bsdutils e2fsprogs curl imagemagick fail2ban dnsutils
-        bsdmainutils cron vesta vesta-nginx vesta-php expect postgresql96-server git mc"
+        bsdmainutils cron vesta vesta-nginx vesta-php expect postgresql-9.6 git mc"
 else
     software="nginx apache2 apache2-utils apache2.2-common
         apache2-suexec-custom libapache2-mod-ruid2 libapache2-mod-rpaf
@@ -54,7 +54,7 @@ else
         mysql-client postgresql postgresql-contrib phppgadmin phpMyAdmin mc
         flex whois rssh git idn zip sudo bc ftp lsof ntpdate rrdtool quota
         e2fslibs bsdutils e2fsprogs curl imagemagick fail2ban dnsutils
-        bsdmainutils cron vesta vesta-nginx vesta-php expect postgresql96-server git mc"
+        bsdmainutils cron vesta vesta-nginx vesta-php expect postgresql-9.6 git mc"
 fi
 
 # Defining help function
@@ -502,8 +502,8 @@ echo "deb http://$RHOST/$codename/ $codename vesta" > $apt/vesta.list
 wget $CHOST/deb_signing.key -O deb_signing.key
 apt-key add deb_signing.key
 
-add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ ${codename}-pgdg main"
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add
+add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ $codename-pgdg main"
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add
 
 #----------------------------------------------------------#
 #                         Backup                           #
@@ -659,7 +659,7 @@ if [ "$postgresql" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/phppgadmin//')
 fi
 if [ "$postgresql96" = 'no' ]; then
-    software=$(echo "$software" | sed -e 's/postgresql96-server//')
+    software=$(echo "$software" | sed -e 's/postgresql-9.6//')
 fi
 if [ "$postgresql" = 'no' ] && [ "$postgresql96" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/php7.0-pgsql//')
