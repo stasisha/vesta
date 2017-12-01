@@ -29,5 +29,5 @@ Install [helper](https://stasisha.github.io/vesta/)
 
 License
 ----------------------------
-Vesta is licensed under  [GPL v3 ](https://github.com/serghey-rodin/vesta/blob/master/LICENSE) license
+Vesta is licensed under  [GPL v3 ](https://github.com/stasisha/vesta/blob/master/LICENSE) license
 
