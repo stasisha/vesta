@@ -745,7 +745,7 @@ fi
 if [ "$postgresql96" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/postgresql96-server//')
 fi
-if [ "$postgresql96" = 'no' ]; then
+if [ "$postgresql10" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/postgresql10-server//')
 fi
 if [ "$postgresql" = 'no' ] && [ "$postgresql96" = 'no' ] && [ "$postgresql10" = 'no' ]; then
@@ -1584,7 +1584,7 @@ fi
 echo "Get public IP from ifconfig.co"
 pub_ip=$(curl -s ifconfig.co)
 if [ ! -z "$pub_ip" ] && [ "$pub_ip" != "$ip" ]; then
-    echo "Public IP is: $ip"
+    echo "Public IP detected as : $pub_ip"
     $VESTA/bin/v-change-sys-ip-nat $ip $pub_ip
     ip=$pub_ip
 fi
@@ -1657,9 +1657,7 @@ echo "Adding cronjob for autoupdates"
 $VESTA/bin/v-add-cron-vesta-autoupdate
 
 
-#----------------------------------------------------------#
-#                   Vesta Access Info                      #
-#----------------------------------------------------------#
+
 
 # Comparing hostname and IP
 host_ip=$(host $servername| head -n 1 | awk '{print $NF}')
@@ -1675,13 +1673,8 @@ Vesta Control Panel
     username: admin
     password: $vpass
 
-We hope that you enjoy your installation of Vesta. Please \
-feel free to contact us anytime if you have any questions.
+We hope that you enjoy your installation of Vesta.
 Thank you.
-
---
-Sincerely yours
-vestacp.com team
 " > $tmpfile
 
 send_mail="$VESTA/web/inc/mail-wrapper.php"
