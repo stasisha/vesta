@@ -502,8 +502,12 @@ echo "deb http://$RHOST/$codename/ $codename vesta" > $apt/vesta.list
 wget $CHOST/deb_signing.key -O deb_signing.key
 apt-key add deb_signing.key
 
+# Installing postgresql9.6 repository
 add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ $codename-pgdg main"
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add
+
+# Installing php repository
+add-apt-repository ppa:ondrej/php
 
 #----------------------------------------------------------#
 #                         Backup                           #
