@@ -171,6 +171,12 @@ if [  -e "/usr/lib/systemd/system/php70-php-fpm.service" ]; then
     data="$data\nNAME='php70-php-fpm' SYSTEM='backend server' STATE='$state'"
     data="$data CPU='$cpu' MEM='$mem' RTIME='$rtime'"
 fi
+if [  -e "/lib/systemd/system/php7.0-fpm.service" ]; then
+    proc_name="php/7.0"
+    get_srv_state $proc_name
+    data="$data\nNAME='php7.0-fpm' SYSTEM='backend server' STATE='$state'"
+    data="$data CPU='$cpu' MEM='$mem' RTIME='$rtime'"
+fi
 
 # Checking WEB Backend: default php71-fpm
 if [  -e "/usr/lib/systemd/system/php71-php-fpm.service" ]; then
@@ -179,12 +185,24 @@ if [  -e "/usr/lib/systemd/system/php71-php-fpm.service" ]; then
     data="$data\nNAME='php71-php-fpm' SYSTEM='backend server' STATE='$state'"
     data="$data CPU='$cpu' MEM='$mem' RTIME='$rtime'"
 fi
+if [  -e "/lib/systemd/system/php7.1-fpm.service" ]; then
+    proc_name="php/7.1"
+    get_srv_state $proc_name
+    data="$data\nNAME='php7.1-fpm' SYSTEM='backend server' STATE='$state'"
+    data="$data CPU='$cpu' MEM='$mem' RTIME='$rtime'"
+fi
 
 # Checking WEB Backend: default php72-fpm
 if [  -e "/usr/lib/systemd/system/php72-php-fpm.service" ]; then
     proc_name="php72"
     get_srv_state $proc_name
     data="$data\nNAME='php72-php-fpm' SYSTEM='backend server' STATE='$state'"
+    data="$data CPU='$cpu' MEM='$mem' RTIME='$rtime'"
+fi
+if [  -e "/lib/systemd/system/php7.2-fpm.service" ]; then
+    proc_name="php/7.2"
+    get_srv_state $proc_name
+    data="$data\nNAME='php7.2-fpm' SYSTEM='backend server' STATE='$state'"
     data="$data CPU='$cpu' MEM='$mem' RTIME='$rtime'"
 fi
 
@@ -273,6 +291,20 @@ if [ ! -z "$DB_SYSTEM" ] && [ "$DB_SYSTEM" != 'remote' ]; then
         proc_name=''
     done
 fi
+
+
+if [  -e "/usr/bin/psql" ]; then
+    PGV=$(psql -V |  awk -v N=3 '{print $N}')
+    PGVD=(${PGV//./ })
+    if [ ${PGVD[0]}  = "9" ] || [ ${PGVD[1]}  = "6" ]; then
+        proc_name="postgres"
+        get_srv_state $proc_name
+        data="$data\nNAME='postgresql-9.6' SYSTEM='database server' STATE='$state'"
+        data="$data CPU='$cpu' MEM='$mem' RTIME='$rtime'"
+    fi
+fi
+
+
 
 # Checking DB system: PostgreSQL 9.6
 if [  -e "/usr/pgsql-9.6/bin/psql" ]; then

@@ -56,7 +56,7 @@ else
         mysql-client postgresql postgresql-contrib phppgadmin phpMyAdmin mc
         flex whois rssh git idn zip sudo bc ftp lsof ntpdate rrdtool quota
         e2fslibs bsdutils e2fsprogs curl imagemagick fail2ban dnsutils
-        bsdmainutils cron vesta vesta-nginx vesta-php expect postgresql-9.6 git mc"
+        bsdmainutils cron vesta vesta-nginx vesta-php expect git mc"
 fi
 
 # Defining help function
@@ -1341,7 +1341,7 @@ if [ "$mysql" = 'yes' ]; then
 fi
 
 # Configuring PostgreSQL host
-if [ "$postgresql" = 'yes' ]; then
+if [ "$postgresql" = 'yes' ] || [ "$postgresql9.6" = 'yes' ] || [ "$postgresql10" = 'yes' ]; then
     $VESTA/bin/v-add-database-host pgsql localhost postgres $vpass
     $VESTA/bin/v-add-database admin db db $(gen_pass) pgsql
 fi

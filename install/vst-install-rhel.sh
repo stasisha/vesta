@@ -1450,7 +1450,7 @@ if [ "$mysql" = 'yes' ]; then
 fi
 
 # Configuring PostgreSQL host
-if [ "$postgresql" = 'yes' ] ||  [ "$postgresql9.6" = 'yes' ] ||  [ "$postgresql10" = 'yes' ]; then
+if [ "$postgresql" = 'yes' ] || [ "$postgresql9.6" = 'yes' ] ||  [ "$postgresql10" = 'yes' ]; then
     $VESTA/bin/v-add-database-host pgsql localhost postgres $vpass
     $VESTA/bin/v-add-database admin db db $(gen_pass) pgsql
 fi
