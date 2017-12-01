@@ -655,7 +655,7 @@ if [ "$mysql" = 'no' ]; then
 fi
 if [ "$postgresql" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/postgresql-contrib//')
-    software=$(echo "$software" | sed -e 's/postgresql//')
+    software=$(echo "$software" | sed -e 's/postgresql //')
     software=$(echo "$software" | sed -e 's/phppgadmin//')
 fi
 if [ "$postgresql96" = 'no' ]; then
