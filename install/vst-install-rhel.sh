@@ -136,6 +136,7 @@ for arg; do
         --mysql)                args="${args}-m  " ;;
         --postgresql)           args="${args}-g  " ;;
         --postgresql96)         args="${args}-g96" ;;
+        --postgresql10)         args="${args}-g10" ;;
         --mongodb)              args="${args}-d  " ;;
         --exim)                 args="${args}-x  " ;;
         --dovecot)              args="${args}-z  " ;;
@@ -162,7 +163,7 @@ done
 eval set -- "$args"
 
 # Parsing arguments
-while getopts "a:n:w:w70:w71:w72:v:j:k:m:g:g96:d:x:z:c:t:i:b:r:q:gt:co:mc:l:y:s:e:p:fh" Option; do
+while getopts "a:n:w:w70:w71:w72:v:j:k:m:g:g96:g10:d:x:z:c:t:i:b:r:q:gt:co:mc:l:y:s:e:p:fh" Option; do
     case $Option in
         a)   apache=$OPTARG ;;            # Apache
         n)   nginx=$OPTARG ;;             # Nginx
@@ -176,6 +177,7 @@ while getopts "a:n:w:w70:w71:w72:v:j:k:m:g:g96:d:x:z:c:t:i:b:r:q:gt:co:mc:l:y:s:
         m)   mysql=$OPTARG ;;             # MySQL
         g)   postgresql=$OPTARG ;;        # PostgreSQL
         g96) postgresql96=$OPTARG ;;      # PostgreSQL9.6
+        g10) postgresql96=$OPTARG ;;      # PostgreSQL10
         d)   mongodb=$OPTARG ;;           # MongoDB (unsupported)
         x)   exim=$OPTARG ;;              # Exim
         z)   dovecot=$OPTARG ;;           # Dovecot
@@ -211,7 +213,8 @@ set_default_value 'proftpd' 'no'
 set_default_value 'named' 'yes'
 set_default_value 'mysql' 'yes'
 set_default_value 'postgresql' 'no'
-set_default_value 'postgresql96' 'yes'
+set_default_value 'postgresql96' 'no'
+set_default_value 'postgresql10' 'yes'
 set_default_value 'mongodb' 'no'
 set_default_value 'exim' 'yes'
 set_default_value 'dovecot' 'yes'
@@ -372,6 +375,9 @@ fi
 if [ "$postgresql96" = 'yes' ]; then
     echo '   - PostgreSQL 9.6 Database Server'
 fi
+if [ "$postgresql10" = 'yes' ]; then
+    echo '   - PostgreSQL 10 Database Server'
+fi
 if [ "$mongodb" = 'yes' ]; then
     echo '   - MongoDB Database Server'
 fi
@@ -514,8 +520,12 @@ echo "gpgcheck=1" >> $vrepo
 echo "gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-VESTA" >> $vrepo
 wget $vestacp/GPG.txt -O /etc/pki/rpm-gpg/RPM-GPG-KEY-VESTA
 
-# Installing postgresql9.6 repository
+# Installing postgresql repository
 yum install -y https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-redhat96-9.6-3.noarch.rpm
+yum install -y https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-redhat10-10-2.noarch.rpm
+
+#yum install -y https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-ppc64le/pgdg-centos96-9.6-3.noarch.rpm
+#yum install -y https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-centos10-10-2.noarch.rpm
 
 #----------------------------------------------------------#
 #                         Backup                           #
@@ -525,7 +535,7 @@ yum install -y https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x
 mkdir -p $vst_backups
 cd $vst_backups
 mkdir nginx httpd php php-fpm vsftpd proftpd named exim dovecot clamd \
-    spamassassin mysql postgresql mongodb vesta pgsql9.6
+    spamassassin mysql postgresql mongodb vesta pgsql9.6 pgsql10
 
 # Backing up Nginx configuration
 service nginx stop > /dev/null 2>&1
@@ -604,8 +614,9 @@ mv /root/.my.cnf  $vst_backups/mysql > /dev/null 2>&1
 # Backing up MySQL/MariaDB configuration and data
 service postgresql stop > /dev/null 2>&1
 service postgresql-9.6 > /dev/null 2>&1
+service postgresql-10 > /dev/null 2>&1
 mv /var/lib/pgsql/data $vst_backups/postgresql/  >/dev/null 2>&1
-mv /var/lib/pgsql/9.6 $vst_backups/postgresql96/  >/dev/null 2>&1
+mv /var/lib/pgsql/9.6 $vst_backups/postgresql10/  >/dev/null 2>&1
 
 
 # Backing up Vesta configuration and data
@@ -691,7 +702,10 @@ fi
 if [ "$postgresql96" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/postgresql96-server//')
 fi
-if [ "$postgresql" = 'no' ] && [ "$postgresql96" = 'no' ]; then
+if [ "$postgresql96" = 'no' ]; then
+    software=$(echo "$software" | sed -e 's/postgresql10-server//')
+fi
+if [ "$postgresql" = 'no' ] && [ "$postgresql96" = 'no' ] && [ "$postgresql10" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/php-pgsql//')
 fi
 if [ "$mc" = 'no' ]; then

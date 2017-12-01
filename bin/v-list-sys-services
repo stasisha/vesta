@@ -282,6 +282,14 @@ if [  -e "/usr/pgsql-9.6/bin/psql" ]; then
     data="$data CPU='$cpu' MEM='$mem' RTIME='$rtime'"
 fi
 
+# Checking DB system: PostgreSQL 10
+if [  -e "/usr/pgsql-10/bin/psql" ]; then
+    proc_name="postgres"
+    get_srv_state $proc_name
+    data="$data\nNAME='postgresql-10' SYSTEM='database server' STATE='$state'"
+    data="$data CPU='$cpu' MEM='$mem' RTIME='$rtime'"
+fi
+
 # Checking FTP system
 if [ ! -z "$FTP_SYSTEM" ] && [ "$FTP_SYSTEM" != 'remote' ]; then
     get_srv_state $FTP_SYSTEM

@@ -728,6 +728,26 @@ check_result $? "apt-get install failed"
 # Restore policy
 rm -f /usr/sbin/policy-rc.d
 
+#----------------------------------------------------------#
+#                     Patching system                      #
+#----------------------------------------------------------#
+
+wget $base"/bin/v-add-web-domain" -O $VESTA"/bin/v-add-web-domain"
+wget $base"/bin/v-add-web-domain-backend" -O $VESTA"/bin/v-add-web-domain-backend"
+wget $base"/bin/v-change-sys-service-config" -O $VESTA"/bin/v-change-sys-service-config"
+wget $base"/bin/v-change-web-domain-backend-tpl" -O $VESTA"/bin/v-change-web-domain-backend-tpl"
+wget $base"/bin/v-list-sys-php70-config" -O $VESTA"/bin/v-list-sys-php70-config"
+wget $base"/bin/v-list-sys-php71-config" -O $VESTA"/bin/v-list-sys-php71-config"
+wget $base"/bin/v-list-sys-php72-config" -O $VESTA"/bin/v-list-sys-php72-config"
+wget $base"/bin/v-list-sys-services" -O $VESTA"/bin/v-list-sys-services"
+wget $base"/bin/v-restart-web-backend" -O $VESTA"/bin/v-restart-web-backend"
+wget $base"/bin/v-change-web-domain-backend-tpl" -O $VESTA"/bin/v-change-web-domain-backend-tpl"
+
+wget $base"/func/domain.sh" -O $VESTA"/func/domain.sh"
+
+chmod 755 $VESTA"/bin/v-list-sys-php70-config"
+chmod 755 $VESTA"/bin/v-list-sys-php71-config"
+chmod 755 $VESTA"/bin/v-list-sys-php72-config"
 
 #----------------------------------------------------------#
 #                     Configure system                     #
@@ -1096,13 +1116,13 @@ if [ "$postgresql" = 'yes' ]; then
 fi
 
 if [ "$postgresql96" = 'yes' ]; then
-    /usr/pgsql-9.6/bin/postgresql96-setup initdb
-    systemctl enable postgresql-9.6.service
-    wget $base"/install/rhel/7/postgresql/pg_hba.conf" -O "/var/lib/pgsql/9.6/data/pg_hba.conf"
-    systemctl start postgresql-9.6.service
+    rm -rf /var/lib/postgresql/9.6/main
+    /usr/lib/postgresql/9.6/bin/initdb -D /var/lib/postgresql/9.6/main --auth-local peer --auth-host md5
+    #wget $base"/install/ubuntu/16.04/postgresql/pg_hba.conf" -O "/var/lib/postgresql/9.6/main/pg_hba.conf"
+    su - postgres -c "/usr/lib/postgresql/9.6/bin/pg_ctl -D /var/lib/postgresql/9.6/main -l logfile start"
+    sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$vpass'"
     mkdir $VESTA"/web/edit/server/postgresql-9.6"
     wget $base"/web/edit/server/postgresql-9.6/index.php" -O $VESTA"/web/edit/server/postgresql-9.6/index.php"
-    sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$vpass'"
 fi
 
 #----------------------------------------------------------#
