@@ -261,7 +261,7 @@ if [ ! -z "$ANTISPAM_SYSTEM" ] && [ "$ANTISPAM_SYSTEM" != 'remote' ]; then
     data="$data STATE='$state' CPU='$cpu' MEM='$mem' RTIME='$rtime'"
 fi
 
-# Checking DB system: default
+# Checking DB system: mysql
 if [ ! -z "$DB_SYSTEM" ] && [ "$DB_SYSTEM" != 'remote' ]; then
     for db in ${DB_SYSTEM//,/ }; do
         proc_name=''
@@ -274,8 +274,31 @@ if [ ! -z "$DB_SYSTEM" ] && [ "$DB_SYSTEM" != 'remote' ]; then
                     service='mariadb'
                 fi
             fi
+
+            get_srv_state $service $proc_name
+            data="$data\nNAME='$service' SYSTEM='default database server' STATE='$state'"
+            data="$data CPU='$cpu' MEM='$mem' RTIME='$rtime'"
+            proc_name=''
         fi
-        if [ "$service" == 'pgsql' ] && [  -e "/usr/bin/psql" ]; then
+    done
+fi
+
+# Checking DB system: PostgreSQL Debian/Ubuntu/RHEL/CentOS
+if [  -e "/usr/bin/psql" ]; then
+    PGV=$(psql -V |  awk -v N=3 '{print $N}')
+    PGVD=(${PGV//./ })
+    if [ ${PGVD[0]}  = "9" ] || [ ${PGVD[1]}  = "6" ]; then
+        proc_name="postgres"
+        get_srv_state $proc_name
+        data="$data\nNAME='postgresql-9.6' SYSTEM='database server' STATE='$state'"
+        data="$data CPU='$cpu' MEM='$mem' RTIME='$rtime'"
+    elif [ ${PGVD[0]}  = "1" ] || [ ${PGVD[1]}  = "0" ]; then
+        proc_name="postgres"
+        get_srv_state $proc_name
+        data="$data\nNAME='postgresql-9.6' SYSTEM='database server' STATE='$state'"
+        data="$data CPU='$cpu' MEM='$mem' RTIME='$rtime'"
+    el
+        if [ "$service" == 'pgsql' ]; then
             service='postgresql'
             proc_name='postmaster'
             if [ ! -e "/etc/redhat-release" ]; then
@@ -285,28 +308,11 @@ if [ ! -z "$DB_SYSTEM" ] && [ "$DB_SYSTEM" != 'remote' ]; then
                 proc_name='postgres'
             fi
         fi
-        get_srv_state $service $proc_name
-        data="$data\nNAME='$service' SYSTEM='default database server' STATE='$state'"
-        data="$data CPU='$cpu' MEM='$mem' RTIME='$rtime'"
-        proc_name=''
-    done
-fi
-
-
-if [  -e "/usr/bin/psql" ]; then
-    PGV=$(psql -V |  awk -v N=3 '{print $N}')
-    PGVD=(${PGV//./ })
-    if [ ${PGVD[0]}  = "9" ] || [ ${PGVD[1]}  = "6" ]; then
-        proc_name="postgres"
-        get_srv_state $proc_name
-        data="$data\nNAME='postgresql-9.6' SYSTEM='database server' STATE='$state'"
-        data="$data CPU='$cpu' MEM='$mem' RTIME='$rtime'"
     fi
 fi
 
 
-
-# Checking DB system: PostgreSQL 9.6
+# Checking DB system: PostgreSQL 9.6 RHEL/CentOS
 if [  -e "/usr/pgsql-9.6/bin/psql" ]; then
     proc_name="postgres"
     get_srv_state $proc_name
@@ -314,7 +320,7 @@ if [  -e "/usr/pgsql-9.6/bin/psql" ]; then
     data="$data CPU='$cpu' MEM='$mem' RTIME='$rtime'"
 fi
 
-# Checking DB system: PostgreSQL 10
+# Checking DB system: PostgreSQL 10 RHEL/CentOS
 if [  -e "/usr/pgsql-10/bin/psql" ]; then
     proc_name="postgres"
     get_srv_state $proc_name
