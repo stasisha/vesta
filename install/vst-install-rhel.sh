@@ -1586,7 +1586,7 @@ fi
 echo "Get public IP from ifconfig.co"
 pub_ip=$(curl -s ifconfig.co)
 if [ ! -z "$pub_ip" ] && [ "$pub_ip" != "$ip" ]; then
-    echo "Public IP detected as : $pub_ip"
+    echo "Public IP detected as: $pub_ip"
     $VESTA/bin/v-change-sys-ip-nat $ip $pub_ip
     ip=$pub_ip
 fi

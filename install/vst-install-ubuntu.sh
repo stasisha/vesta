@@ -23,14 +23,17 @@ if [ "$release" = '16.04' ]; then
     software="nginx apache2 apache2-utils apache2.2-common
         apache2-suexec-custom libapache2-mod-ruid2 libapache2-mod-rpaf
         libapache2-mod-fcgid libapache2-mod-php php php-common php-cgi
-        php-mysql php-curl php-fpm php-pgsql awstats webalizer vsftpd
+        php-mysql php-curl php-fpm php-pgsql libapache2-mod-php7.0 php7.0 php7.0-common php7.0-cgi
+        php7.0-mysql php7.0-curl php7.0-fpm php7.0-pgsql php7.1 php7.1-common php7.1-cgi
+        php7.1-mysql php7.1-curl php7.1-fpm php7.1-pgsql php7.2 php7.2-common php7.2-cgi
+        php7.2-mysql php7.2-curl php7.2-fpm php7.2-pgsql awstats webalizer vsftpd
         proftpd-basic bind9 exim4 exim4-daemon-heavy clamav-daemon
         spamassassin dovecot-imapd dovecot-pop3d roundcube-core
         roundcube-mysql roundcube-plugins mysql-server mysql-common
         mysql-client postgresql postgresql-contrib phppgadmin phpmyadmin mc
         flex whois rssh git idn zip sudo bc ftp lsof ntpdate rrdtool quota
         e2fslibs bsdutils e2fsprogs curl imagemagick fail2ban dnsutils
-        bsdmainutils cron vesta vesta-nginx vesta-php expect postgresql-9.6 git mc"
+        bsdmainutils cron vesta vesta-nginx vesta-php expect postgresql-9.6 postgresql-10 git mc"
 elif [ "$release" = '16.10' ]; then
     software="nginx apache2 apache2-utils apache2.2-common
         apache2-suexec-custom libapache2-mod-ruid2 libapache2-mod-rpaf
@@ -44,7 +47,7 @@ elif [ "$release" = '16.10' ]; then
         mysql-client postgresql postgresql-contrib phppgadmin phpmyadmin mc
         flex whois rssh git idn zip sudo bc ftp lsof ntpdate rrdtool quota
         e2fslibs bsdutils e2fsprogs curl imagemagick fail2ban dnsutils
-        bsdmainutils cron vesta vesta-nginx vesta-php expect postgresql-9.6 git mc"
+        bsdmainutils cron vesta vesta-nginx vesta-php expect postgresql-9.6 postgresql-10 git mc"
 else
     software="nginx apache2 apache2-utils apache2.2-common
         apache2-suexec-custom libapache2-mod-ruid2 libapache2-mod-rpaf
@@ -1514,7 +1517,7 @@ fi
 echo "Get public IP from ifconfig.co"
 pub_ip=$(curl -s ifconfig.co)
 if [ ! -z "$pub_ip" ] && [ "$pub_ip" != "$ip" ]; then
-    echo "Public IP detected as : $pub_ip"
+    echo "Public IP detected as: $pub_ip"
     $VESTA/bin/v-change-sys-ip-nat $ip $pub_ip
     ip=$pub_ip
 fi
