@@ -96,7 +96,11 @@ prepare_web_backend() {
     fi
 
     if [ ! -e "$pool" ]; then
-        check_result $E_NOTEXIST "php-fpm pool doesn't exist. Pool path: $pool"
+        pools=$(find /etc/php* /etc/opt/remi/ -type d \( -name "pool.d" -o -name "*fpm.d" \))
+        if [ -z "$pools" ]; then
+            check_result $E_NOTEXIST "php-fpm pool doesn't exist"
+        fi
+        pool=${pools[0]}
     fi
 
     backend_type="$domain"
