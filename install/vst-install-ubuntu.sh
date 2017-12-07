@@ -1268,9 +1268,10 @@ fi
 if [ "$postgresql96" = 'yes' ]; then
     echo "Configure PostgreSQL 9.6"
     rm -rf /var/lib/postgresql/9.6/main
-    /usr/lib/postgresql/9.6/bin/initdb -D /var/lib/postgresql/9.6/main --auth-local peer --auth-host md5
+    su - postgres -c "/usr/lib/postgresql/9.6/bin/initdb -D /var/lib/postgresql/9.6/main --auth-local peer --auth-host md5"
     wget $base"/install/ubuntu/16.04/postgresql/pg_hba.conf" -O "/var/lib/postgresql/9.6/main/pg_hba.conf"
     su - postgres -c "/usr/lib/postgresql/9.6/bin/pg_ctl -D /var/lib/postgresql/9.6/main -l logfile start"
+    service postgresql restart
     sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$vpass'"
     mkdir $VESTA"/web/edit/server/postgresql-9.6"
     wget $base"/web/edit/server/postgresql-9.6/index.php" -O $VESTA"/web/edit/server/postgresql-9.6/index.php"
@@ -1278,11 +1279,12 @@ fi
 if [ "$postgresql10" = 'yes' ]; then
     echo "Configure PostgreSQL 10"
     rm -rf /var/lib/postgresql/10/main
-    /usr/lib/postgresql/10/bin/initdb -D /var/lib/postgresql/10/main --auth-local peer --auth-host md5
+    su - postgres -c "/usr/lib/postgresql/10/bin/initdb -D /var/lib/postgresql/10/main --auth-local peer --auth-host md5"
     wget $base"/install/ubuntu/16.04/postgresql/pg_hba.conf" -O "/var/lib/postgresql/10/main/pg_hba.conf"
     su - postgres -c "/usr/lib/postgresql/10/bin/pg_ctl -D /var/lib/postgresql/10/main -l logfile start"
     mkdir $VESTA"/web/edit/server/postgresql-10"
     wget $base"/web/edit/server/postgresql-10/index.php" -O $VESTA"/web/edit/server/postgresql-10/index.php"
+    service postgresql restart
     sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$vpass'"
 fi
 

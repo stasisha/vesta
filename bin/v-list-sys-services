@@ -86,7 +86,7 @@ get_srv_state() {
         pids=$(pidof -x $name |tr ' ' '|')
     fi
     if [ -z "$pids" ] && [ "$name" != 'nginx' ]; then
-        pids=$(pgrep $name |tr '\n' '|')
+        pids=$(pgrep -P $name |tr '\n' '|')
     fi
     if [ -z "$pids" ]; then
         parent=$(ps aux | grep $srv | grep -v grep | awk '{print $2}')
@@ -292,21 +292,19 @@ if [  -e "/usr/bin/psql" ]; then
         get_srv_state $proc_name
         data="$data\nNAME='postgresql-9.6' SYSTEM='database server' STATE='$state'"
         data="$data CPU='$cpu' MEM='$mem' RTIME='$rtime'"
-    elif [ ${PGVD[0]}  = "1" ] || [ ${PGVD[1]}  = "0" ]; then
-        proc_name="postgres"
+    elif [ ${PGVD[0]}  = "10" ] || [ -z ${PGVD[1]} ]; then
+        proc_name="postgresql"
         get_srv_state $proc_name
-        data="$data\nNAME='postgresql-9.6' SYSTEM='database server' STATE='$state'"
+        data="$data\nNAME='postgresql-10' SYSTEM='database server' STATE='$state'"
         data="$data CPU='$cpu' MEM='$mem' RTIME='$rtime'"
-    el
-        if [ "$service" == 'pgsql' ]; then
-            service='postgresql'
-            proc_name='postmaster'
-            if [ ! -e "/etc/redhat-release" ]; then
-                proc_name='postgres'
-            fi
-            if [ ! -e '/etc/init.d/postgresql' ]; then
-                proc_name='postgres'
-            fi
+    elif [ "$service" == 'pgsql' ]; then
+        service='postgres'
+        proc_name='postmaster'
+        if [ ! -e "/etc/redhat-release" ]; then
+            proc_name='postgres'
+        fi
+        if [ ! -e '/etc/init.d/postgresql' ]; then
+            proc_name='postgres'
         fi
     fi
 fi
