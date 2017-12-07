@@ -793,6 +793,10 @@ echo "#----------------------------------------------------------#"
 echo "#                     Patching system                      #"
 echo "#----------------------------------------------------------#"
 
+# PHP
+wget $base"/web/add/db/index.php" -O $VESTA"/web/add/db/index.php"
+
+# Bin
 wget $base"/bin/v-add-web-domain" -O $VESTA"/bin/v-add-web-domain"
 wget $base"/bin/v-add-web-domain-backend" -O $VESTA"/bin/v-add-web-domain-backend"
 wget $base"/bin/v-change-sys-service-config" -O $VESTA"/bin/v-change-sys-service-config"
