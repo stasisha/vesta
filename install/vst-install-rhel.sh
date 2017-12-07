@@ -799,6 +799,7 @@ wget $base"/web/add/db/index.php" -O $VESTA"/web/add/db/index.php"
 # Bin
 wget $base"/bin/v-add-web-domain" -O $VESTA"/bin/v-add-web-domain"
 wget $base"/bin/v-add-web-domain-backend" -O $VESTA"/bin/v-add-web-domain-backend"
+wget $base"/bin/v-delete-web-domain-backend" -O $VESTA"/bin/v-delete-web-domain-backend"
 wget $base"/bin/v-change-sys-service-config" -O $VESTA"/bin/v-change-sys-service-config"
 wget $base"/bin/v-change-web-domain-backend-tpl" -O $VESTA"/bin/v-change-web-domain-backend-tpl"
 wget $base"/bin/v-list-sys-php70-config" -O $VESTA"/bin/v-list-sys-php70-config"
