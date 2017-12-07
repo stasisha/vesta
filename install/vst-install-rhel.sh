@@ -739,7 +739,7 @@ fi
 if [ "$postgresql96" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/postgresql96-server//')
 fi
-if [ "$postgresql1032" = 'no' ]; then
+if [ "$postgresql10" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/postgresql10-server//')
 fi
 if [ "$postgresql" = 'no' ] && [ "$postgresql96" = 'no' ] && [ "$postgresql10" = 'no' ]; then
