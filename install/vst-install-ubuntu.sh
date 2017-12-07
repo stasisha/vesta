@@ -1121,7 +1121,7 @@ if [ "$phpfpm70" = 'yes' ]; then
   echo "PHP 7.0 port: $backend_port"
   sed -i "s/9000/"$backend_port"/" /etc/php/7.0/fpm/pool.d/www.conf
   service php7.0-fpm start
-  mkdir $VESTA"/web/edit/server/php70-php-fpm"
+  mkdir $VESTA"/web/edit/server/php7.0-fpm"
   wget $base"/web/edit/server/php7.0-fpm/index.php" -O $VESTA"/web/edit/server/php7.0-fpm/index.php"
   wget $base"/install/ubuntu/$release/templates/web/php-fpm/php70.tpl" -O $VESTA"/data/templates/web/php-fpm/php70.tpl"
 fi
@@ -1131,7 +1131,7 @@ if [ "$phpfpm71" = 'yes' ]; then
   sed -i "s/9000/"$backend_port"/" /etc/php/7.1/fpm/pool.d/www.conf
   echo "PHP 7.1 port: $backend_port"
   service php7.1-fpm start
-  mkdir $VESTA"/web/edit/server/php71-php-fpm"
+  mkdir $VESTA"/web/edit/server/php7.1-fpm"
   wget $base"/web/edit/server/php7.1-fpm/index.php" -O $VESTA"/web/edit/server/php7.1-fpm/index.php"
   wget $base"/install/ubuntu/$release/templates/web/php-fpm/php71.tpl" -O $VESTA"/data/templates/web/php-fpm/php71.tpl"
 fi
@@ -1141,7 +1141,7 @@ if [ "$phpfpm72" = 'yes' ]; then
   echo "PHP 7.2 port: $backend_port"
   sed -i "s/9000/"$backend_port"/" /etc/php/7.2/fpm/pool.d/www.conf
   service php7.2-fpm start
-  mkdir $VESTA"/web/edit/server/php72-php-fpm"
+  mkdir $VESTA"/web/edit/server/php7.2-fpm"
   wget $base"/web/edit/server/php7.2-fpm/index.php" -O $VESTA"/web/edit/server/php7.2-fpm/index.php"
   wget $base"/install/ubuntu/$release/templates/web/php-fpm/php72.tpl" -O $VESTA"/data/templates/web/php-fpm/php72.tpl"
 fi
