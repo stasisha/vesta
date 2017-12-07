@@ -121,6 +121,16 @@ if [ "$update" = 'yes' ] && [ "$restart" != 'no' ]; then
 		service="php70-php-fpm"
 	fi
 
+	if [ "$service" = 'php7.0' ]; then
+		service="php7.0-fpm"
+	fi
+    if [ "$service" = 'php7.1' ]; then
+		service="php7.1-fpm"
+	fi
+	if [ "$service" = 'php7.2' ]; then
+		service="php7.2-fpm"
+	fi
+
     service $service restart >/dev/null 2>&1
     if [ $? -ne 0 ]; then
         for config in $dst; do
