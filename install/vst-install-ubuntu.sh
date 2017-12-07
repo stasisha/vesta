@@ -394,6 +394,9 @@ fi
 if [ "$postgresql96" = 'yes' ]; then
     echo '   - PostgreSQL 9.6 Database Server'
 fi
+if [ "$postgresql10" = 'yes' ]; then
+    echo '   - PostgreSQL 10 Database Server'
+fi
 if [ "$mongodb" = 'yes' ]; then
     echo '   - MongoDB Database Server'
 fi
