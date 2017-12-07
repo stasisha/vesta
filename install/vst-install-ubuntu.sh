@@ -480,6 +480,7 @@ fi
 
 # Defining backup directory
 vst_backups="/root/vst_install_backups/$(date +%s)"
+echo ""
 echo "Installation backup directory: $vst_backups"
 
 # Printing start message and sleeping for 5 seconds
@@ -1121,7 +1122,7 @@ if [ "$phpfpm70" = 'yes' ]; then
   sed -i "s/9000/"$backend_port"/" /etc/php/7.0/fpm/pool.d/www.conf
   service php7.0-fpm start
   mkdir $VESTA"/web/edit/server/php70-php-fpm"
-  wget $base"/web/edit/server/php70-php-fpm/index.php" -O $VESTA"/web/edit/server/php70-php-fpm/index.php"
+  wget $base"/web/edit/server/php7.0-fpm/index.php" -O $VESTA"/web/edit/server/php7.0-fpm/index.php"
   wget $base"/install/ubuntu/$release/templates/web/php-fpm/php70.tpl" -O $VESTA"/data/templates/web/php-fpm/php70.tpl"
 fi
 
@@ -1131,7 +1132,7 @@ if [ "$phpfpm71" = 'yes' ]; then
   echo "PHP 7.1 port: $backend_port"
   service php7.1-fpm start
   mkdir $VESTA"/web/edit/server/php71-php-fpm"
-  wget $base"/web/edit/server/php71-php-fpm/index.php" -O $VESTA"/web/edit/server/php71-php-fpm/index.php"
+  wget $base"/web/edit/server/php7.1-fpm/index.php" -O $VESTA"/web/edit/server/php7.1-fpm/index.php"
   wget $base"/install/ubuntu/$release/templates/web/php-fpm/php71.tpl" -O $VESTA"/data/templates/web/php-fpm/php71.tpl"
 fi
 
@@ -1141,7 +1142,7 @@ if [ "$phpfpm72" = 'yes' ]; then
   sed -i "s/9000/"$backend_port"/" /etc/php/7.2/fpm/pool.d/www.conf
   service php7.2-fpm start
   mkdir $VESTA"/web/edit/server/php72-php-fpm"
-  wget $base"/web/edit/server/php72-php-fpm/index.php" -O $VESTA"/web/edit/server/php72-php-fpm/index.php"
+  wget $base"/web/edit/server/php7.2-fpm/index.php" -O $VESTA"/web/edit/server/php7.2-fpm/index.php"
   wget $base"/install/ubuntu/$release/templates/web/php-fpm/php72.tpl" -O $VESTA"/data/templates/web/php-fpm/php72.tpl"
 fi
 

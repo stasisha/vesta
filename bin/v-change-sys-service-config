@@ -46,6 +46,9 @@ case $service in
     php70)          dst=$(find /etc/php* /etc/opt/remi -name php.ini | grep php70);;
     php71)          dst=$(find /etc/php* /etc/opt/remi -name php.ini | grep php71);;
     php72)          dst=$(find /etc/php* /etc/opt/remi -name php.ini | grep php72);;
+    php7.0)         dst=$(find /etc/php* -name php.ini | grep 7.0/fpm);;
+    php7.1)         dst=$(find /etc/php* -name php.ini | grep 7.1/fpm);;
+    php7.2)         dst=$(find /etc/php* -name php.ini | grep 7.2/fpm);;
     mysql)          dst=$(find /etc/my* -name my.cnf);;
     mysqld)         dst=$(find /etc/my* -name my.cnf);;
     mariadb)        dst=$(find /etc/my* -name my.cnf);;
