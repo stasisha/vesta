@@ -42,9 +42,10 @@ is_object_unsuspended 'web' 'DOMAIN' "$domain"
 #                       Action                             #
 #----------------------------------------------------------#
 
-# Defining pool directory
-pool=$(find /etc/php* -type d \( -name "pool.d" -o -name "*fpm.d" \))
-if [ ! -e "$pool" ]; then
+# Allocating backend port
+
+pools=$(find /etc/php* /etc/opt/remi/ -type d \( -name "pool.d" -o -name "*fpm.d" \))
+if [ -z "$pools" ]; then
     check_result $E_NOTEXIST "php-fpm pool doesn't exist"
 fi
 
@@ -63,8 +64,9 @@ if [ "$WEB_BACKEND_POOL" = 'user' ]; then
 fi
 
 # Deleting backend
-rm -f $pool/$backend_type.conf
-
+for pool_pointer in $pools; do
+	rm -f $pool_pointer/$backend_type.conf
+done
 
 #----------------------------------------------------------#
 #                       Vesta                              #
