@@ -275,7 +275,7 @@ if [ ! -z "$DB_SYSTEM" ] && [ "$DB_SYSTEM" != 'remote' ]; then
                 fi
             fi
         fi
-        if [ "$service" == 'pgsql' ]; then
+        if [ "$service" == 'pgsql' ] && [  -e "/usr/bin/psql" ]; then
             service='postgresql'
             proc_name='postmaster'
             if [ ! -e "/etc/redhat-release" ]; then
