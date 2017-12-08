@@ -1107,7 +1107,8 @@ if [ "$phpfpm" = 'yes' ]; then
     echo "#----------------------------------------------------------#"
     echo "#                     Configure PHP-FPM                    #"
     echo "#----------------------------------------------------------#"
-    pool=$(find /etc/php* -type d \( -name "pool.d" -o -name "*fpm.d" \))
+    #pool=$(find /etc/php* -type d \( -name "pool.d" -o -name "*fpm.d" \))
+    pool="/etc/php/7.0/fpm/pool.d"
     wget $vestacp/php-fpm/www.conf -O $pool/www.conf
     php_fpm=$(ls /etc/init.d/php*-fpm* |cut -f 4 -d /)
     ln -s /etc/init.d/$php_fpm /etc/init.d/php-fpm > /dev/null 2>&1
@@ -1117,9 +1118,9 @@ if [ "$phpfpm" = 'yes' ]; then
 fi
 
 if [ "$phpfpm70" = 'yes' ]; then
-  backend_port=$((backend_port + 1))
+  #backend_port=$((backend_port + 1))
   echo "PHP 7.0 port: $backend_port"
-  sed -i "s/9000/"$backend_port"/" /etc/php/7.0/fpm/pool.d/www.conf
+ # sed -i "s/9000/"$backend_port"/" /etc/php/7.0/fpm/pool.d/www.conf
   service php7.0-fpm start
   mkdir $VESTA"/web/edit/server/php7.0-fpm"
   wget $base"/web/edit/server/php7.0-fpm/index.php" -O $VESTA"/web/edit/server/php7.0-fpm/index.php"
