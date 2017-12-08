@@ -1108,7 +1108,7 @@ if [ "$phpfpm" = 'yes' ]; then
     echo "#                     Configure PHP-FPM                    #"
     echo "#----------------------------------------------------------#"
     #pool=$(find /etc/php* -type d \( -name "pool.d" -o -name "*fpm.d" \))
-    pool="/etc/php/7.0/fpm/pool.d"
+    pool=$(find /etc/php -type d \( -name "pool.d" -o -name "*fpm.d" \) | grep 7.0)
     wget $vestacp/php-fpm/www.conf -O $pool/www.conf
     #php_fpm=$(ls /etc/init.d/php*-fpm* |cut -f 4 -d /)
     php_fpm="php7.0-fpm"
@@ -1130,7 +1130,7 @@ fi
 
 if [ "$phpfpm71" = 'yes' ]; then
   backend_port=$((backend_port + 1))
-  pool="/etc/php/7.1/fpm/pool.d"
+  pool=$(find /etc/php -type d \( -name "pool.d" -o -name "*fpm.d" \) | grep 7.1)
   wget $vestacp/php-fpm/www.conf -O $pool/www.conf
   sed -i "s/9000/"$backend_port"/" /etc/php/7.1/fpm/pool.d/www.conf
   echo "PHP 7.1 port: $backend_port"
@@ -1143,7 +1143,7 @@ fi
 if [ "$phpfpm72" = 'yes' ]; then
   backend_port=$((backend_port + 1))
   echo "PHP 7.2 port: $backend_port"
-  pool="/etc/php/7.2/fpm/pool.d"
+  pool=$(find /etc/php -type d \( -name "pool.d" -o -name "*fpm.d" \) | grep 7.2)
   wget $vestacp/php-fpm/www.conf -O $pool/www.conf
   sed -i "s/9000/"$backend_port"/" /etc/php/7.2/fpm/pool.d/www.conf
   service php7.2-fpm start

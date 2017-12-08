@@ -85,12 +85,18 @@ is_web_alias_new() {
 # Prepare web backend
 prepare_web_backend() {
 
-    if [ "$template" == "php70" ]; then
+    if [ "$template" == "php70" ] && [ -d "etc/opt/remi" ]; then
         pool=$(find /etc/opt/remi -type d \( -name "pool.d" -o -name "*fpm.d" \) | grep php70)
-    elif [ "$template" == "php71" ]; then
+    elif [ "$template" == "php71" ] && [ -d "etc/opt/remi" ]; then
         pool=$(find /etc/opt/remi -type d \( -name "pool.d" -o -name "*fpm.d" \) | grep php71)
-    elif [ "$template" == "php72" ]; then
+    elif [ "$template" == "php72" ] && [ -d "etc/opt/remi" ]; then
         pool=$(find /etc/opt/remi -type d \( -name "pool.d" -o -name "*fpm.d" \) | grep php72)
+    elif [ "$template" == "php70" ]; then
+        pool=$(find /etc/php -type d \( -name "pool.d" -o -name "*fpm.d" \) | grep 7.0)
+    elif [ "$template" == "php71" ]; then
+        pool=$(find /etc/php -type d \( -name "pool.d" -o -name "*fpm.d" \) | grep 7.1)
+    elif [ "$template" == "php72" ]; then
+        pool=$(find /etc/php -type d \( -name "pool.d" -o -name "*fpm.d" \) | grep 7.2)
     else
         pool=$(find /etc/php* -type d \( -name "pool.d" -o -name "*fpm.d" \))
     fi
