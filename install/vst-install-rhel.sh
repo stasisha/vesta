@@ -533,12 +533,12 @@ wget $vestacp/GPG.txt -O /etc/pki/rpm-gpg/RPM-GPG-KEY-VESTA
 # Installing PostgreSQL repository
 if [ "$release" -eq 7 ] && [  "$os" = "CentOS" ]; then
     echo "Installing PostgreSQL repository CentOS 7"
-    yum install -y https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-redhat96-9.6-3.noarch.rpm
-    yum install -y https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-redhat10-10-2.noarch.rpm
-elif [ "$release" -eq 7 ]; then
-    echo "Installing PostgreSQL repository RHEL 7"
     yum install -y https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-ppc64le/pgdg-centos96-9.6-3.noarch.rpm
     yum install -y https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-centos10-10-2.noarch.rpm
+elif [ "$release" -eq 7 ]; then
+    echo "Installing PostgreSQL repository RHEL 7"
+    yum install -y https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-redhat96-9.6-3.noarch.rpm
+    yum install -y https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-redhat10-10-2.noarch.rpm
 fi
 
 #----------------------------------------------------------#
@@ -768,10 +768,10 @@ echo "Installing rpm packages:"
 echo "$software"
 if [ "$remi" = 'yes' ]; then
     yum -y --disablerepo=* \
-        --enablerepo="*base,*updates,nginx,epel,vesta,pgdg96,remi*" \
+        --enablerepo="*base,*updates,nginx,epel,vesta,pgdg96,pgdg10,remi*" \
         install $software
 else
-    yum -y --disablerepo=* --enablerepo="*base,*updates,nginx,epel,vesta,pgdg96" \
+    yum -y --disablerepo=* --enablerepo="*base,*updates,nginx,epel,vesta,pgdg96,pgdg10" \
         install $software
 fi
 check_result $? "yum install failed"
