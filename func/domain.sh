@@ -97,16 +97,18 @@ prepare_web_backend() {
         pool=$(find /etc/php -type d \( -name "pool.d" -o -name "*fpm.d" \) | grep 7.1)
     elif [ "$template" == "php72" ]; then
         pool=$(find /etc/php -type d \( -name "pool.d" -o -name "*fpm.d" \) | grep 7.2)
-    else
-        pool=$(find /etc/php* -type d \( -name "pool.d" -o -name "*fpm.d" \))
     fi
 
-    if [ ! -e "$pool" ]; then
+    if [ -z "$pool" ] && [ -e "/etc/opt/remi/" ]; then
         pools=$(find /etc/php* /etc/opt/remi/ -type d \( -name "pool.d" -o -name "*fpm.d" \))
-        if [ -z "$pools" ]; then
-            check_result $E_NOTEXIST "php-fpm pool doesn't exist"
-        fi
-        pool=${pools[0]}
+        pool=$(echo $pools | awk '{print $1}')
+    else
+        pools=$(find /etc/php* -type d \( -name "pool.d" -o -name "*fpm.d" \));
+        pool=$(echo $pools | awk '{print $1}')
+    fi
+
+    if [ -z "$pool" ]; then
+       check_result $E_NOTEXIST "php-fpm pool doesn't exist"
     fi
 
     backend_type="$domain"
