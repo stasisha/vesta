@@ -13,13 +13,9 @@ Connect to your server as root via SSH
 ssh root@your.server
 ```
 
-Download the installation script:
+Run the script and follow the assistant:
 ```bash
-curl -O https://raw.githubusercontent.com/stasisha/vesta/master/install/vst-install.sh
-```
-Then run it:
-```bash
-bash vst-install.sh
+curl -L https://git.io/vst -o vst && bash vst
 ```
 
 Install [helper](https://stasisha.github.io/vesta/)
