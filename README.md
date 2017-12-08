@@ -9,20 +9,16 @@ How to install
 ----------------------------
 
 Connect to your server as root via SSH
-```bash
+```
 ssh root@your.server
 ```
 
-Download the installation script:
-```bash
-curl -O https://raw.githubusercontent.com/stasisha/vesta/master/install/vst-install.sh
+Run the script and follow the assistant:
 ```
-Then run it:
-```bash
-bash vst-install.sh
+curl -L https://git.io/vst -o vst && bash vst
 ```
 
-Install [helper](https://stasisha.github.io/vesta/)
+[Advanced Installer](https://stasisha.github.io/vesta/)
 
 
 License
