@@ -9,12 +9,12 @@ How to install
 ----------------------------
 
 Connect to your server as root via SSH
-```bash
+```
 ssh root@your.server
 ```
 
 Run the script and follow the assistant:
-```bash
+```
 curl -L https://git.io/vst -o vst && bash vst
 ```
 
