@@ -18,7 +18,7 @@ Run the script and follow the assistant:
 curl -L https://git.io/vst -o vst && bash vst
 ```
 
-Install [helper](https://stasisha.github.io/vesta/)
+[Advanced Installer](https://stasisha.github.io/vesta/)
 
 
 License
