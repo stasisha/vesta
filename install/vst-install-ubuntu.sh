@@ -1110,7 +1110,8 @@ if [ "$phpfpm" = 'yes' ]; then
     #pool=$(find /etc/php* -type d \( -name "pool.d" -o -name "*fpm.d" \))
     pool="/etc/php/7.0/fpm/pool.d"
     wget $vestacp/php-fpm/www.conf -O $pool/www.conf
-    php_fpm=$(ls /etc/init.d/php*-fpm* |cut -f 4 -d /)
+    #php_fpm=$(ls /etc/init.d/php*-fpm* |cut -f 4 -d /)
+    php_fpm="php7.0-fpm"
     ln -s /etc/init.d/$php_fpm /etc/init.d/php-fpm > /dev/null 2>&1
     update-rc.d $php_fpm defaults
     service $php_fpm start
