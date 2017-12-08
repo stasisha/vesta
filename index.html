@@ -207,7 +207,7 @@
                     </li>
                     <li>
                         <h5>Run it</h5>
-                        <div id="install-line">curl -L https://git.io/vst -o vst && bash vst</div>
+                        <div id="install-line"></div>
                     </li>
                 </ol>
             </div>
@@ -242,7 +242,7 @@
         });
         $('#install-form').submit(function (e) {
             e.preventDefault();
-            var install = 'bash vst-install.sh';
+            var install = 'curl -L https://git.io/vst -o vst && bash vst';
             $('#install-form .form-control, .checkbox input').each(function (i, elm) {
                 if(elm.type == 'checkbox'){
                     if(elm.checked){
