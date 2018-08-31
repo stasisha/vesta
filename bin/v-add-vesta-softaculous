@@ -22,8 +22,10 @@ source $VESTA/conf/vesta.conf
 #----------------------------------------------------------#
 
 if [ "$TYPE" = 'WEB' ]; then
-    $BIN/v-schedule-vesta-softaculous
-    exit
+    if [ ! -e "$VESTA/softaculous" ] && [ ! -e "$VESTA/ioncube" ]; then
+        $BIN/v-schedule-vesta-softaculous
+        exit
+    fi
 else
     cmd="v-add-vesta-softaculous"
     check_cron=$(grep "$cmd" $VESTA/data/users/admin/cron.conf 2> /dev/null)
@@ -44,7 +46,7 @@ fi
 #----------------------------------------------------------#
 
 # Cleaning yum cache
-if [ -e "/etc/redhat-release" ]; then
+if [ -d "/etc/sysconfig" ]; then
     yum -q clean all
     yum="yum -q -y --noplugins --disablerepo=* --enablerepo=vesta"
 else
@@ -55,7 +57,7 @@ fi
 
 # Updating php pacakge
 if [ -z "$($VESTA/php/bin/php -v|grep 'PHP 5.6')" ]; then
-    if [ -e "/etc/redhat-release" ]; then
+    if [ -d "/etc/sysconfig" ]; then
         $yum -y update vesta-php
         check_result $? "vesta-php package upgrade failed" $E_UPDATE
     else
@@ -65,7 +67,7 @@ if [ -z "$($VESTA/php/bin/php -v|grep 'PHP 5.6')" ]; then
 fi
 
 # Adding vesta-ioncube package
-if [ -e "/etc/redhat-release" ]; then
+if [ -d "/etc/sysconfig" ]; then
     rpm -q vesta-ioncube >/dev/null 2>&1
     if [ $? -ne 0 ]; then
         $yum -y install vesta-ioncube >/dev/null 2>&1
@@ -80,7 +82,7 @@ else
 fi
 
 # Adding vesta-softaculous package
-if [ -e "/etc/redhat-release" ]; then
+if [ -d "/etc/sysconfig" ]; then
     rpm -q vesta-softaculous >/dev/null 2>&1
     if [ $? -ne 0 ]; then
         $yum -y install vesta-softaculous >/dev/null 2>&1
@@ -96,11 +98,20 @@ fi
 
 # Installing softaculous
 if [ ! -e "$VESTA/softaculous/vst_installed" ]; then
+    mkdir -p /var/softaculous
+    chown -R admin:admin /var/softaculous
     cd $VESTA/softaculous
     wget -q http://c.vestacp.com/3rdparty/softaculous_install.inc
     $VESTA/php/bin/php softaculous_install.inc
     check_result $? "vesta-softaculous package installation failed" $E_UPDATE
     touch $VESTA/softaculous/vst_installed
+fi
+
+# Enabling symlink
+if [ -e "$VESTA/disabled_plugins/softaculous" ]; then
+    if [ ! -e "$VESTA/web/softaculous" ]; then
+        mv $VESTA/disabled_plugins/softaculous $VESTA/web/softaculous
+    fi
 fi
 
 # Updating SOFTACULOUS value

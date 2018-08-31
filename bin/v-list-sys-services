@@ -93,7 +93,7 @@ get_srv_state() {
         pids=$(pgrep -P $parent|tr '\n' '|')
 		pids=$pids$parent
     fi
-	
+
     # Checking pid
     if [ ! -z "$pids" ]; then
         pid=$(echo "$pids" |cut -f 1 -d '|')
@@ -158,7 +158,7 @@ fi
 
 # Checking WEB Backend: default php-fpm
 if [ ! -z "$WEB_BACKEND" ] && [ "$WEB_BACKEND" != 'remote' ]; then
-    proc_name="/etc/php-fpm.conf)"
+    proc_name=$(ls /usr/sbin/php*fpm* | rev | cut -d'/' -f 1 | rev)
     get_srv_state $proc_name
     data="$data\nNAME='$WEB_BACKEND' SYSTEM='default backend server' STATE='$state'"
     data="$data CPU='$cpu' MEM='$mem' RTIME='$rtime'"
@@ -238,7 +238,7 @@ fi
 
 # Checking MAIL ANTIVIRUS
 if [ ! -z "$ANTIVIRUS_SYSTEM" ] && [ "$ANTIVIRUS_SYSTEM" != 'remote' ]; then
-    if [ -e "/etc/redhat-release" ]; then
+    if [ -d "/etc/sysconfig" ]; then
         if [ "$ANTIVIRUS_SYSTEM" == 'clamav' ];then
             ANTIVIRUS_SYSTEM='clamd'
         fi
@@ -267,7 +267,7 @@ if [ ! -z "$DB_SYSTEM" ] && [ "$DB_SYSTEM" != 'remote' ]; then
         proc_name=''
         service="$db"
         if [ "$service" = 'mysql' ]; then
-            if [ -e "/etc/redhat-release" ]; then
+            if [ -d "/etc/sysconfig" ]; then
                 service='mysqld'
                 proc_name='mysqld'
                 if [ -e "/usr/lib/systemd/system/mariadb.service" ]; then
@@ -300,7 +300,7 @@ if [  -e "/usr/bin/psql" ]; then
     elif [ "$service" == 'pgsql' ]; then
         service='postgres'
         proc_name='postmaster'
-        if [ ! -e "/etc/redhat-release" ]; then
+        if [ ! -d "/etc/sysconfig" ]; then
             proc_name='postgres'
         fi
         if [ ! -e '/etc/init.d/postgresql' ]; then

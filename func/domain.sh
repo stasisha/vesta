@@ -107,8 +107,9 @@ prepare_web_backend() {
         pool=$(echo $pools | awk '{print $1}')
     fi
 
-    if [ -z "$pool" ]; then
-       check_result $E_NOTEXIST "php-fpm pool doesn't exist"
+    pool=$(find -L /etc/php* -type d \( -name "pool.d" -o -name "*fpm.d" \))
+    if [ ! -e "$pool" ]; then
+        check_result $E_NOTEXIST "php-fpm pool doesn't exist"
     fi
 
     backend_type="$domain"
@@ -224,7 +225,7 @@ add_web_config() {
             -e "s|%ssl_pem%|$ssl_pem|g" \
             -e "s|%ssl_ca_str%|$ssl_ca_str|g" \
             -e "s|%ssl_ca%|$ssl_ca|g" \
-    >> $conf
+    > $conf
 
     chown root:$user $conf
     chmod 640 $conf
@@ -291,7 +292,7 @@ replace_web_config() {
     fi
 }
 
-# Delete web configuartion
+# Delete web configuration
 del_web_config() {
     conf="$HOMEDIR/$user/conf/web/$domain.$1.conf"
     if [[ "$2" =~ stpl$ ]]; then
@@ -309,10 +310,12 @@ del_web_config() {
         fi
         get_web_config_lines $WEBTPL/$1/$WEB_BACKEND/$2 $conf
         sed -i "$top_line,$bottom_line d" $conf
-
-        web_domain=$(grep DOMAIN $USER_DATA/web.conf |wc -l)
-        if [ "$web_domain" -eq '0' ]; then
-            sed -i "/.*\/$user\/.*$1.conf/d" /etc/$1/conf.d/vesta.conf
+    fi
+    # clean-up for both config styles if there is no more domains
+    web_domain=$(grep DOMAIN $USER_DATA/web.conf |wc -l)
+    if [ "$web_domain" -eq '0' ]; then
+        sed -i "/.*\/$user\/conf\/web\//d" /etc/$1/conf.d/vesta.conf
+        if [ -f "$conf" ]; then
             rm -f $conf
         fi
     fi
