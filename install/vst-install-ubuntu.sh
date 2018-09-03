@@ -83,6 +83,7 @@ help() {
     exit 1
 }
 
+
 # Defining password-gen function
 gen_pass() {
     MATRIX='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
@@ -160,7 +161,7 @@ for arg; do
         --spamassassin)         args="${args}-t  " ;;
         --iptables)             args="${args}-i  " ;;
         --fail2ban)             args="${args}-b  " ;;
-        --softaculous)          args="${args}-o " ;;
+        --softaculous)          args="${args}-o  " ;;
         --remi)                 args="${args}-r  " ;;
         --quota)                args="${args}-q  " ;;
         --git)                  args="${args}-qt " ;;
@@ -180,7 +181,7 @@ done
 eval set -- "$args"
 
 # Parsing arguments
-while getopts "a:n:w:w70:w71:w72:v:j:k:m:g:g96:g10:d:x:z:c:t:i:b:r:o:q:gt:co:mc:l:y:s:e:p:f:h" Option; do
+while getopts "a:n:w:w70:w71:w72:v:j:k:m:g:g96:g10:d:x:z:c:t:i:b:r:o:q:gt:co:mc:l:y:s:e:p:fh" Option; do
     case $Option in
         a)   apache=$OPTARG ;;            # Apache
         n)   nginx=$OPTARG ;;             # Nginx

@@ -177,7 +177,7 @@ done
 eval set -- "$args"
 
 # Parsing arguments
-while getopts "a:n:w:w70:w71:w72:v:j:k:m:g:g96:g10:d:x:z:c:t:i:b:r:p:q:gt:co:mc:l:y:s:e:p:f:h" Option; do
+while getopts "a:n:w:w70:w71:w72:v:j:k:m:g:g96:g10:d:x:z:c:t:i:b:r:q:gt:co:mc:l:y:s:e:p:fh" Option; do
     case $Option in
         a)   apache=$OPTARG ;;            # Apache
         n)   nginx=$OPTARG ;;             # Nginx
@@ -199,7 +199,7 @@ while getopts "a:n:w:w70:w71:w72:v:j:k:m:g:g96:g10:d:x:z:c:t:i:b:r:p:q:gt:co:mc:
         t)   spamd=$OPTARG ;;             # SpamAssassin
         i)   iptables=$OPTARG ;;          # Iptables
         b)   fail2ban=$OPTARG ;;          # Fail2ban
-        o)   softaculous=$OPTARG ;;
+        o)   softaculous=$OPTARG ;;       # Softaculous plugin
         r)   remi=$OPTARG ;;              # Remi repo
         q)   quota=$OPTARG ;;             # FS Quota
         qt)  git=$OPTARG ;;               # Git
