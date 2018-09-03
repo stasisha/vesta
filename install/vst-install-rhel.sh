@@ -784,11 +784,11 @@ if [ "$mysql" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/mariadb-server//')
     yum remove mariadb mariadb-server -y
 fi
-if [ "maria102" = 'no' ] && [ "maria103" = 'no']; then
+if [ "$maria102" = 'no' ] && [ "$maria103" = 'no']; then
     software=$(echo "$software" | sed -e 's/MariaDB-server//')
     software=$(echo "$software" | sed -e 's/MariaDB-client//')
 fi
-if [ "$mysql" = 'no' ] && [ "maria102" = 'no' ] && [ "maria103" = 'no']; then
+if [ "$mysql" = 'no' ] && [ "$maria102" = 'no' ] && [ "$maria103" = 'no']; then
     software=$(echo "$software" | sed -e 's/php-mysql//')
     software=$(echo "$software" | sed -e 's/phpMyAdmin//')
     software=$(echo "$software" | sed -e 's/roundcubemail//')
@@ -1292,7 +1292,7 @@ fi
 #                  Configure MySQL/MariaDB                 #
 #----------------------------------------------------------#
 
-if [ "$mysql" = 'yes' ] || [ "maria102" = 'yes' ] || [ "maria103" = 'yes']; then
+if [ "$mysql" = 'yes' ] || [ "$maria102" = 'yes' ] || [ "$maria103" = 'yes']; then
     echo "#----------------------------------------------------------#"
     echo "#                  Configure MySQL/MariaDB                 #"
     echo "#----------------------------------------------------------#"
