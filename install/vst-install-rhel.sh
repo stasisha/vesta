@@ -31,7 +31,7 @@ software="awstats bc bind bind-libs bind-utils clamav-server clamav-update
     postgresql-server proftpd roundcubemail rrdtool rsyslog screen
     spamassassin sqlite sudo tar telnet unzip vesta vesta-ioncube vesta-nginx
     vesta-php vesta-softaculous vim-common vsftpd webalizer which zip
-    postgresql96-server postgresql10-server git mc"
+    postgresql96-server postgresql10-server git mc mariadb-client"
 
 # Fix for old releases
 if [ "$release" -lt 7 ]; then
@@ -45,39 +45,41 @@ fi
 # Defining help function
 help() {
     echo "Usage: $0 [OPTIONS]
-  -a,  --apache            Install Apache        [yes|no]  default: no
-  -n,  --nginx             Install Nginx         [yes|no]  default: yes
-  -w,  --phpfpm            Install PHP-FPM       [yes|no]  default: yes
-  -w70,--phpfpm70          Install PHP-FPM 7.0   [yes|no]  default: yes
-  -w71,--phpfpm71          Install PHP-FPM 7.1   [yes|no]  default: yes
-  -w72,--phpfpm72          Install PHP-FPM 7.2   [yes|no]  default: yes
-  -v,  --vsftpd            Install Vsftpd        [yes|no]  default: yes
-  -j,  --proftpd           Install ProFTPD       [yes|no]  default: no
-  -k,  --named             Install Bind          [yes|no]  default: yes
-  -m,  --mysql             Install MySQL         [yes|no]  default: yes
-  -g,  --postgresql        Install PostgreSQL    [yes|no]  default: no
-  -g96,--postgresql96      Install PostgreSQL 9.6[yes|no]  default: no
-  -g10,--postgresql10      Install PostgreSQL 10 [yes|no]  default: yes
-  -d,  --mongodb           Install MongoDB       [yes|no]  unsupported
-  -x,  --exim              Install Exim          [yes|no]  default: yes
-  -z,  --dovecot           Install Dovecot       [yes|no]  default: yes
-  -c,  --clamav            Install ClamAV        [yes|no]  default: yes
-  -t,  --spamassassin      Install SpamAssassin  [yes|no]  default: yes
-  -i,  --iptables          Install Iptables      [yes|no]  default: yes
-  -b,  --fail2ban          Install Fail2ban      [yes|no]  default: yes
-  -r,  --remi              Install Remi repo     [yes|no]  default: yes
-  -o, --softaculous       Install Softaculous
-  -q,  --quota             Filesystem Quota      [yes|no]  default: no
-  -qt, --git               Git                   [yes|no]  default: yes
-  -сo, --composer          Composer              [yes|no]  default: yes
-  -mc, --mc                Midnight Сommander    [yes|no]  default: yes
-  -l,  --lang              Default language                default: en
-  -y,  --interactive       Interactive install   [yes|no]  default: yes
-  -s,  --hostname          Set hostname
-  -e,  --email             Set admin email
-  -p,  --password          Set admin password
-  -f,  --force             Force installation
-  -h,  --help              Print this help
+  -a,    --apache            Install Apache        [yes|no]  default: no
+  -n,    --nginx             Install Nginx         [yes|no]  default: yes
+  -w,    --phpfpm            Install PHP-FPM       [yes|no]  default: yes
+  -w70,  --phpfpm70          Install PHP-FPM 7.0   [yes|no]  default: yes
+  -w71,  --phpfpm71          Install PHP-FPM 7.1   [yes|no]  default: yes
+  -w72,  --phpfpm72          Install PHP-FPM 7.2   [yes|no]  default: yes
+  -v,    --vsftpd            Install Vsftpd        [yes|no]  default: yes
+  -j,    --proftpd           Install ProFTPD       [yes|no]  default: no
+  -k,    --named             Install Bind          [yes|no]  default: yes
+  -m,    --mysql             Install MySQL/MariaDB [yes|no]  default: yes
+  -ma102,--maria10.2         Install MariaDB 10.2  [yes|no]  default: yes
+  -ma103,--maria10.3         Install MariaDB 10.3  [yes|no]  default: yes
+  -g,    --postgresql        Install PostgreSQL    [yes|no]  default: no
+  -g96,  --postgresql96      Install PostgreSQL 9.6[yes|no]  default: no
+  -g10,  --postgresql10      Install PostgreSQL 10 [yes|no]  default: yes
+  -d,    --mongodb           Install MongoDB       [yes|no]  unsupported
+  -x,    --exim              Install Exim          [yes|no]  default: yes
+  -z,    --dovecot           Install Dovecot       [yes|no]  default: yes
+  -c,    --clamav            Install ClamAV        [yes|no]  default: yes
+  -t,    --spamassassin      Install SpamAssassin  [yes|no]  default: yes
+  -i,    --iptables          Install Iptables      [yes|no]  default: yes
+  -b,    --fail2ban          Install Fail2ban      [yes|no]  default: yes
+  -r,    --remi              Install Remi repo     [yes|no]  default: yes
+  -o,    --softaculous       Install Softaculous   [yes|no]  default: yes
+  -q,    --quota             Filesystem Quota      [yes|no]  default: no
+  -qt,   --git               Git                   [yes|no]  default: yes
+  -сo,   --composer          Composer              [yes|no]  default: yes
+  -mc,   --mc                Midnight Сommander    [yes|no]  default: yes
+  -l,    --lang              Default language                default: en
+  -y,    --interactive       Interactive install   [yes|no]  default: yes
+  -s,    --hostname          Set hostname
+  -e,    --email             Set admin email
+  -p,    --password          Set admin password
+  -f,    --force             Force installation
+  -h,    --help              Print this help
 
   Example: bash $0 -e demo@vestacp.com -p p4ssw0rd --apache no --phpfpm yes"
     exit 1
@@ -147,6 +149,8 @@ for arg; do
         --proftpd)              args="${args}-j  " ;;
         --named)                args="${args}-k  " ;;
         --mysql)                args="${args}-m  " ;;
+        --maria102)             args="${args}-m  " ;;
+        --maria103)             args="${args}-m  " ;;
         --postgresql)           args="${args}-g  " ;;
         --postgresql96)         args="${args}-g96" ;;
         --postgresql10)         args="${args}-g10" ;;
@@ -179,40 +183,42 @@ eval set -- "$args"
 # Parsing arguments
 while getopts "a:n:w:w70:w71:w72:v:j:k:m:g:g96:g10:d:x:z:c:t:i:b:r:q:gt:co:mc:l:y:s:e:p:fh" Option; do
     case $Option in
-        a)   apache=$OPTARG ;;            # Apache
-        n)   nginx=$OPTARG ;;             # Nginx
-        w)   phpfpm=$OPTARG ;;            # PHP-FPM
-        w70) phpfpm70=$OPTARG ;;          # PHP-FPM 7.0
-        w71) phpfpm71=$OPTARG ;;          # PHP-FPM 7.1
-        w72) phpfpm72=$OPTARG ;;          # PHP-FPM 7.2
-        v)   vsftpd=$OPTARG ;;            # Vsftpd
-        j)   proftpd=$OPTARG ;;           # Proftpd
-        k)   named=$OPTARG ;;             # Named
-        m)   mysql=$OPTARG ;;             # MySQL
-        g)   postgresql=$OPTARG ;;        # PostgreSQL
-        g96) postgresql96=$OPTARG ;;      # PostgreSQL 9.6
-        g10) postgresql10=$OPTARG ;;      # PostgreSQL 10
-        d)   mongodb=$OPTARG ;;           # MongoDB (unsupported)
-        x)   exim=$OPTARG ;;              # Exim
-        z)   dovecot=$OPTARG ;;           # Dovecot
-        c)   clamd=$OPTARG ;;             # ClamAV
-        t)   spamd=$OPTARG ;;             # SpamAssassin
-        i)   iptables=$OPTARG ;;          # Iptables
-        b)   fail2ban=$OPTARG ;;          # Fail2ban
-        o)   softaculous=$OPTARG ;;       # Softaculous plugin
-        r)   remi=$OPTARG ;;              # Remi repo
-        q)   quota=$OPTARG ;;             # FS Quota
-        qt)  git=$OPTARG ;;               # Git
-        co)  composer=$OPTARG ;;          # Composer
-        mc)  mc=$OPTARG ;;                # Midnight Сommander
-        l)   lang=$OPTARG ;;              # Language
-        y)   interactive=$OPTARG ;;       # Interactive install
-        s)   servername=$OPTARG ;;        # Hostname
-        e)   email=$OPTARG ;;             # Admin email
-        p)   vpass=$OPTARG ;;             # Admin password
-        f)   force='yes' ;;               # Force install
-        h)   help ;;                      # Help
-        *)   help ;;                      # Print help (default)
+        a)    apache=$OPTARG ;;            # Apache
+        n)    nginx=$OPTARG ;;             # Nginx
+        w)    phpfpm=$OPTARG ;;            # PHP-FPM
+        w70)  phpfpm70=$OPTARG ;;          # PHP-FPM 7.0
+        w71)  phpfpm71=$OPTARG ;;          # PHP-FPM 7.1
+        w72)  phpfpm72=$OPTARG ;;          # PHP-FPM 7.2
+        v)    vsftpd=$OPTARG ;;            # Vsftpd
+        j)    proftpd=$OPTARG ;;           # Proftpd
+        k)    named=$OPTARG ;;             # Named
+        m)    mysql=$OPTARG ;;             # MySQL
+        ma102)maria102=$OPTARG ;;          # MySQL 10.2
+        ma103)maria103=$OPTARG ;;          # MySQL 10.3
+        g)    postgresql=$OPTARG ;;        # PostgreSQL
+        g96)  postgresql96=$OPTARG ;;      # PostgreSQL 9.6
+        g10)  postgresql10=$OPTARG ;;      # PostgreSQL 10
+        d)    mongodb=$OPTARG ;;           # MongoDB (unsupported)
+        x)    exim=$OPTARG ;;              # Exim
+        z)    dovecot=$OPTARG ;;           # Dovecot
+        c)    clamd=$OPTARG ;;             # ClamAV
+        t)    spamd=$OPTARG ;;             # SpamAssassin
+        i)    iptables=$OPTARG ;;          # Iptables
+        b)    fail2ban=$OPTARG ;;          # Fail2ban
+        o)    softaculous=$OPTARG ;;       # Softaculous plugin
+        r)    remi=$OPTARG ;;              # Remi repo
+        q)    quota=$OPTARG ;;             # FS Quota
+        qt)   git=$OPTARG ;;               # Git
+        co)   composer=$OPTARG ;;          # Composer
+        mc)   mc=$OPTARG ;;                # Midnight Сommander
+        l)    lang=$OPTARG ;;              # Language
+        y)    interactive=$OPTARG ;;       # Interactive install
+        s)    servername=$OPTARG ;;        # Hostname
+        e)    email=$OPTARG ;;             # Admin email
+        p)    vpass=$OPTARG ;;             # Admin password
+        f)    force='yes' ;;               # Force install
+        h)    help ;;                      # Help
+        *)    help ;;                      # Print help (default)
     esac
 done
 
@@ -226,7 +232,9 @@ set_default_value 'phpfpm72' 'yes'
 set_default_value 'vsftpd' 'yes'
 set_default_value 'proftpd' 'no'
 set_default_value 'named' 'yes'
-set_default_value 'mysql' 'yes'
+set_default_value 'mysql' 'no'
+set_default_value 'maria102' 'no'
+set_default_value 'maria103' 'yes'
 set_default_value 'postgresql' 'no'
 set_default_value 'postgresql96' 'no'
 set_default_value 'postgresql10' 'yes'
@@ -395,6 +403,14 @@ if [ "$mysql" = 'yes' ]; then
         echo '   - MySQL Database Server'
     fi
 fi
+
+if [ "$maria102" = 'yes' ]; then
+    echo '   - MariaDB 10.2 Database Server'
+fi
+if [ "$maria103" = 'yes' ]; then
+    echo '   - MariaDB 10.3 Database Server'
+fi
+
 if [ "$postgresql" = 'yes' ]; then
     echo '   - PostgreSQL Database Server'
 fi
@@ -545,6 +561,25 @@ echo "name=nginx repo" >> $nrepo
 echo "baseurl=http://nginx.org/packages/centos/$release/\$basearch/" >> $nrepo
 echo "gpgcheck=0" >> $nrepo
 echo "enabled=1" >> $nrepo
+
+if [ "maria102" = 'yes' ]; then
+echo "Installing MariaDB 10.2 repository"
+mariarepo="/etc/yum.repos.d/mariadb.repo"
+echo "[mariadb]" >> $mariarepo
+echo "name = MariaDB" >> $mariarepo
+echo "baseurl = http://yum.mariadb.org/10.2/centos7-amd64" >> $mariarepo
+echo "gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB" >> $mariarepo
+echo "gpgcheck=1" >> $mariarepo
+fi
+if [ "maria103" = 'yes' ]; then
+echo "Installing MariaDB 10.3 repository"
+mariarepo="/etc/yum.repos.d/mariadb.repo"
+echo "[mariadb]" >> $mariarepo
+echo "name = MariaDB" >> $mariarepo
+echo "baseurl = http://yum.mariadb.org/10.3/centos7-amd64" >> $mariarepo
+echo "gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB" >> $mariarepo
+echo "gpgcheck=1" >> $mariarepo
+fi
 
 # Installing Vesta repository
 echo "Installing Vesta repository"
@@ -756,6 +791,9 @@ if [ "$mysql" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/php-mysql//')
     software=$(echo "$software" | sed -e 's/phpMyAdmin//')
     software=$(echo "$software" | sed -e 's/roundcubemail//')
+fi
+if [ "maria102" = 'no' ] && [ "maria103" = 'no']; then
+    software=$(echo "$software" | sed -e 's/mariadb-client//')
 fi
 if [ "$postgresql" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/postgresql //')
