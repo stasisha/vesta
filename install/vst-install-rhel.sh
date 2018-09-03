@@ -782,6 +782,7 @@ if [ "$mysql" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/mysql-server//')
     software=$(echo "$software" | sed -e 's/mariadb //')
     software=$(echo "$software" | sed -e 's/mariadb-server//')
+    yum remove mariadb mariadb-server
 fi
 if [ "maria102" = 'no' ] && [ "maria103" = 'no']; then
     software=$(echo "$software" | sed -e 's/MariaDB-server//')
@@ -1291,7 +1292,7 @@ fi
 #                  Configure MySQL/MariaDB                 #
 #----------------------------------------------------------#
 
-if [ "$mysql" = 'yes' ]; then
+if [ "$mysql" = 'yes' ] || [ "maria102" = 'yes' ] || [ "maria103" = 'yes'];; then
     echo "#----------------------------------------------------------#"
     echo "#                  Configure MySQL/MariaDB                 #"
     echo "#----------------------------------------------------------#"
