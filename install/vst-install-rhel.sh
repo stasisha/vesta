@@ -1648,21 +1648,18 @@ if [ ! -z "$pub_ip" ] && [ "$pub_ip" != "$ip" ]; then
     ip=$pub_ip
 fi
 
-# Configuring MySQL/MariaDB host
 if [ "$mysql" = 'yes' ] || [ "$maria102" = 'yes' ] || [ "$maria103" = 'yes' ]; then
     echo "Configuring MySQL host"
     $VESTA/bin/v-add-database-host mysql localhost root $vpass
     $VESTA/bin/v-add-database admin default default $(gen_pass) mysql
 fi
 
-# Configuring PostgreSQL host
 if [ "$postgresql" = 'yes' ] || [ "$postgresql9.6" = 'yes' ] || [ "$postgresql10" = 'yes' ]; then
     echo "Configuring PostgreSQL host"
     $VESTA/bin/v-add-database-host pgsql localhost postgres $vpass
     $VESTA/bin/v-add-database admin db db $(gen_pass) pgsql
 fi
 
-# Adding default domain
 echo "Adding default domain"
 $VESTA/bin/v-add-domain admin $servername
 
@@ -1704,18 +1701,15 @@ if [ "$softaculous" = 'yes' ]; then
     $VESTA/bin/v-add-vesta-softaculous
 fi
 
-# Starting Vesta service
 echo "Starting Vesta service"
 chkconfig vesta on
 service vesta start
 check_result $? "vesta start failed"
 chown admin:admin $VESTA/data/sessions
 
-# Adding notifications
 echo "Adding notifications"
 $VESTA/upd/add_notifications.sh
 
-# Adding cronjob for autoupdates
 echo "Adding cronjob for autoupdates"
 $VESTA/bin/v-add-cron-vesta-autoupdate
 
