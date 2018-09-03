@@ -181,7 +181,7 @@ done
 eval set -- "$args"
 
 # Parsing arguments
-while getopts "a:n:w:w70:w71:w72:v:j:k:m:g:g96:g10:d:x:z:c:t:i:b:r:q:gt:co:mc:l:y:s:e:p:fh" Option; do
+while getopts "a:n:w:w70:w71:w72:v:j:k:m:ma102:ma103:g:g96:g10:d:x:z:c:t:i:b:r:q:gt:co:mc:l:y:s:e:p:fh" Option; do
     case $Option in
         a)    apache=$OPTARG ;;            # Apache
         n)    nginx=$OPTARG ;;             # Nginx
@@ -403,7 +403,6 @@ if [ "$mysql" = 'yes' ]; then
         echo '   - MySQL Database Server'
     fi
 fi
-
 if [ "$maria102" = 'yes' ]; then
     echo '   - MariaDB 10.2 Database Server'
 fi
@@ -788,12 +787,14 @@ if [ "$mysql" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/mysql-server//')
     software=$(echo "$software" | sed -e 's/mariadb //')
     software=$(echo "$software" | sed -e 's/mariadb-server//')
-    software=$(echo "$software" | sed -e 's/php-mysql//')
-    software=$(echo "$software" | sed -e 's/phpMyAdmin//')
-    software=$(echo "$software" | sed -e 's/roundcubemail//')
 fi
 if [ "maria102" = 'no' ] && [ "maria103" = 'no']; then
     software=$(echo "$software" | sed -e 's/mariadb-client//')
+fi
+if [ "$mysql" = 'no' ] && [ "maria102" = 'no' ] && [ "maria103" = 'no']; then
+    software=$(echo "$software" | sed -e 's/php-mysql//')
+    software=$(echo "$software" | sed -e 's/phpMyAdmin//')
+    software=$(echo "$software" | sed -e 's/roundcubemail//')
 fi
 if [ "$postgresql" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/postgresql //')
