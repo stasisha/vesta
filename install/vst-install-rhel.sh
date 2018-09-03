@@ -527,11 +527,6 @@ if [ -z "$(swapon -s)" ] && [ $memory -lt 4000000 ]; then
     echo "/swapfile   none    swap    sw    0   0" >> /etc/fstab
 fi
 
-
-#----------------------------------------------------------#
-#                   Install repository                     #
-#----------------------------------------------------------#
-
 echo "#----------------------------------------------------------#"
 echo "#                  Install repositories                    #"
 echo "#----------------------------------------------------------#"
@@ -828,11 +823,8 @@ fi
 #                     Install packages                     #
 #----------------------------------------------------------#
 
-echo "#----------------------------------------------------------#"
-echo "#                     Install packages                     #"
-echo "#----------------------------------------------------------#"
-
-# Installing rpm packages
+echo "Installing rpm packages:"
+echo "$software"
 yum install -y $software
 if [ $? -ne 0 ]; then
     if [ "$remi" = 'yes' ]; then
@@ -854,10 +846,6 @@ if [ "$composer" = 'yes' ]; then
   php composer-setup.php
   php -r "unlink('composer-setup.php');"
 fi
-
-#----------------------------------------------------------#
-#                     Patching system                      #
-#----------------------------------------------------------#
 
 echo "#----------------------------------------------------------#"
 echo "#                     Patching system                      #"
@@ -889,10 +877,6 @@ chmod 755 $VESTA"/bin/v-list-sys-php72-config"
 chmod 755 $VESTA"/bin/v-list-sys-pgsql96-config"
 chmod 755 $VESTA"/bin/v-list-sys-pgsql10-config"
 
-#----------------------------------------------------------#
-#                     Configure system                     #
-#----------------------------------------------------------#
-
 echo "#----------------------------------------------------------#"
 echo "#                     Configure system                     #"
 echo "#----------------------------------------------------------#"
@@ -919,7 +903,7 @@ if [ -e '/etc/sysconfig/selinux' ]; then
     setenforce 0 2>/dev/null
 fi
 
-# Disabling iptables
+echo "Disable iptables"
 service iptables stop
 service firewalld stop >/dev/null 2>&1
 
@@ -1084,20 +1068,19 @@ echo "LANGUAGE='$lang'" >> $VESTA/conf/vesta.conf
 # Version
 echo "VERSION='0.9.8'" >> $VESTA/conf/vesta.conf
 
-# Installing hosting packages
+echo "Installing hosting packages"
 cp -rf $vestacp/packages $VESTA/data/
 
-# Installing templates
+echo "Installing templates"
 cp -rf $vestacp/templates $VESTA/data/
 
-# Copying index.html to default documentroot
+echo "Copying index.html to default documentroot"
 cp $VESTA/data/templates/web/skel/public_html/index.html /var/www/html/
 sed -i 's/%domain%/It worked!/g' /var/www/html/index.html
 
-# Installing firewall rules
+echo "Installing firewall rules"
 cp -rf $vestacp/firewall $VESTA/data/
 
-# Configuring server hostname
 echo "Configuring server hostname"
 $VESTA/bin/v-change-sys-hostname $servername 2>/dev/null
 
@@ -1161,6 +1144,9 @@ fi
 #----------------------------------------------------------#
 
 if [ "$apache" = 'yes'  ]; then
+    echo "#----------------------------------------------------------#"
+    echo "#                    Configure Apache                      #"
+    echo "#----------------------------------------------------------#"
     cp -f $vestacp/httpd/httpd.conf /etc/httpd/conf/
     cp -f $vestacp/httpd/status.conf /etc/httpd/conf.d/
     cp -f $vestacp/httpd/ssl.conf /etc/httpd/conf.d/
@@ -1414,6 +1400,9 @@ fi
 #----------------------------------------------------------#
 
 if [ "$named" = 'yes' ]; then
+    echo "#----------------------------------------------------------#"
+    echo "#                      Configure Bind                      #"
+    echo "#----------------------------------------------------------#"
     cp -f $vestacp/named/named.conf /etc/
     chown root:named /etc/named.conf
     chmod 640 /etc/named.conf
