@@ -561,7 +561,7 @@ echo "baseurl=http://nginx.org/packages/centos/$release/\$basearch/" >> $nrepo
 echo "gpgcheck=0" >> $nrepo
 echo "enabled=1" >> $nrepo
 
-if [ "maria102" = 'yes' ]; then
+if [ "$maria102" = 'yes' ]; then
 echo "Installing MariaDB 10.2 repository"
 mariarepo="/etc/yum.repos.d/mariadb.repo"
 echo "[mariadb]" >> $mariarepo
@@ -570,7 +570,7 @@ echo "baseurl = http://yum.mariadb.org/10.2/centos7-amd64" >> $mariarepo
 echo "gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB" >> $mariarepo
 echo "gpgcheck=1" >> $mariarepo
 fi
-if [ "maria103" = 'yes' ]; then
+if [ "$maria103" = 'yes' ]; then
 echo "Installing MariaDB 10.3 repository"
 mariarepo="/etc/yum.repos.d/mariadb.repo"
 echo "[mariadb]" >> $mariarepo
