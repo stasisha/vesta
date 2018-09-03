@@ -31,7 +31,7 @@ software="awstats bc bind bind-libs bind-utils clamav-server clamav-update
     postgresql-server proftpd roundcubemail rrdtool rsyslog screen
     spamassassin sqlite sudo tar telnet unzip vesta vesta-ioncube vesta-nginx
     vesta-php vesta-softaculous vim-common vsftpd webalizer which zip
-    postgresql96-server postgresql10-server git mc mariadb-client"
+    postgresql96-server postgresql10-server git mc MariaDB-server MariaDB-client"
 
 # Fix for old releases
 if [ "$release" -lt 7 ]; then
@@ -784,7 +784,8 @@ if [ "$mysql" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/mariadb-server//')
 fi
 if [ "maria102" = 'no' ] && [ "maria103" = 'no']; then
-    software=$(echo "$software" | sed -e 's/mariadb-client//')
+    software=$(echo "$software" | sed -e 's/MariaDB-server//')
+    software=$(echo "$software" | sed -e 's/MariaDB-client//')
 fi
 if [ "$mysql" = 'no' ] && [ "maria102" = 'no' ] && [ "maria103" = 'no']; then
     software=$(echo "$software" | sed -e 's/php-mysql//')
