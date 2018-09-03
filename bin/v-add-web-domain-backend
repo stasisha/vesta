@@ -49,7 +49,7 @@ backend_port=9000
 
 if [ -d "/etc/opt/remi/" ]; then
     pools=$(find /etc/php* /etc/opt/remi/ -type d \( -name "pool.d" -o -name "*fpm.d" \))
-el
+else
     pools=$(find /etc/php* -type d \( -name "pool.d" -o -name "*fpm.d" \))
 fi
 for pool_pointer in $pools; do

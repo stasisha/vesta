@@ -784,11 +784,11 @@ if [ "$mysql" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/mariadb-server//')
     yum remove mariadb mariadb-server -y
 fi
-if [ "$maria102" = 'no' ] && [ "$maria103" = 'no']; then
+if [ "$maria102" = 'no' ] && [ "$maria103" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/MariaDB-server//')
     software=$(echo "$software" | sed -e 's/MariaDB-client//')
 fi
-if [ "$mysql" = 'no' ] && [ "$maria102" = 'no' ] && [ "$maria103" = 'no']; then
+if [ "$mysql" = 'no' ] && [ "$maria102" = 'no' ] && [ "$maria103" = 'no' ]; then
     software=$(echo "$software" | sed -e 's/php-mysql//')
     software=$(echo "$software" | sed -e 's/phpMyAdmin//')
     software=$(echo "$software" | sed -e 's/roundcubemail//')
@@ -1603,7 +1603,6 @@ echo "#----------------------------------------------------------#"
 echo "#                   Configure Admin User                   #"
 echo "#----------------------------------------------------------#"
 
-# Deleting old admin user
 if [ ! -z "$(grep ^admin: /etc/passwd)" ] && [ "$force" = 'yes' ]; then
     echo "Deleting old admin user"
     chattr -i /home/admin/conf > /dev/null 2>&1
@@ -1616,30 +1615,25 @@ if [ ! -z "$(grep ^admin: /etc/group)" ] && [ "$force" = 'yes' ]; then
     groupdel admin > /dev/null 2>&1
 fi
 
-# Adding Vesta admin account
 echo "Adding Vesta admin account"
 $VESTA/bin/v-add-user admin $vpass $email default System Administrator
 check_result $? "can't create admin user"
 $VESTA/bin/v-change-user-shell admin bash
 $VESTA/bin/v-change-user-language admin $lang
 
-# Configuring system IPs
 echo "Configuring system IPs"
 $VESTA/bin/v-update-sys-ip
 
-# Get main IP
 echo "Get main IP"
 ip=$(ip addr|grep 'inet '|grep global|head -n1|awk '{print $2}'|cut -f1 -d/)
 echo "Main IP is: $ip"
 
-# Configuring firewall
 if [ "$iptables" = 'yes' ]; then
     echo "Configuring firewall"
     chkconfig firewalld off >/dev/null 2>&1
     $VESTA/bin/v-update-firewall
 fi
 
-# Get public IP
 echo "Get public IP from ifconfig.co"
 pub_ip=$(curl -s ifconfig.co)
 if [ ! -z "$pub_ip" ] && [ "$pub_ip" != "$ip" ]; then
