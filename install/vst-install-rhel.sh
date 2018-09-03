@@ -1292,7 +1292,7 @@ fi
 #                  Configure MySQL/MariaDB                 #
 #----------------------------------------------------------#
 
-if [ "$mysql" = 'yes' ] || [ "$maria102" = 'yes' ] || [ "$maria103" = 'yes']; then
+if [ "$mysql" = 'yes' ] || [ "$maria102" = 'yes' ] || [ "$maria103" = 'yes' ]; then
     echo "#----------------------------------------------------------#"
     echo "#                  Configure MySQL/MariaDB                 #"
     echo "#----------------------------------------------------------#"
@@ -1649,7 +1649,7 @@ if [ ! -z "$pub_ip" ] && [ "$pub_ip" != "$ip" ]; then
 fi
 
 # Configuring MySQL/MariaDB host
-if [ "$mysql" = 'yes' ]; then
+if [ "$mysql" = 'yes' ] || [ "$maria102" = 'yes' ] || [ "$maria103" = 'yes' ]; then
     echo "Configuring MySQL host"
     $VESTA/bin/v-add-database-host mysql localhost root $vpass
     $VESTA/bin/v-add-database admin default default $(gen_pass) mysql

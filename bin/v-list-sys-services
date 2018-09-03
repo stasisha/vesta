@@ -91,7 +91,7 @@ get_srv_state() {
     if [ -z "$pids" ]; then
         parent=$(ps aux | grep $srv | grep -v grep | awk '{print $2}')
         pids=$(pgrep -P $parent|tr '\n' '|')
-		pids=$pids$parent
+        pids=$pids$parent
     fi
 
     # Checking pid
